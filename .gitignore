@@ -1,0 +1,25 @@
+# Dataset (auto-downloaded, large)
+data/
+
+# Checkpoints (large binary files)
+checkpoints*/
+*.pt
+
+# Generated samples
+samples/
+
+# SLURM logs and node files
+logs/
+machine.file.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# macOS
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
