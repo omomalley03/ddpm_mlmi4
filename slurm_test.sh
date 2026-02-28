@@ -2,7 +2,7 @@
 #!
 #! Validation test job for DDPM — choose Job A or Job B below.
 #!
-#! Job A (overfit test, ~30 min): uncomment the "JOB A" options block.
+#! Job A (overfit test, ~1.5 hours): uncomment the "JOB A" options block.
 #! Job B (short full run, ~6-8 hours): uncomment the "JOB B" options block.
 #!
 #! After Job A completes, generate samples manually:
@@ -22,8 +22,8 @@
 #SBATCH -p ampere
 #SBATCH --mail-type=NONE
 
-#! ── JOB A: overfit test (~30 min) ──────────────────────────────────────────
-#SBATCH --time=01:00:00
+#! ── JOB A: overfit test (~1.5 hours) ──────────────────────────────────────
+#SBATCH --time=02:00:00
 options="--mode train --total_steps 50000 --batch_size 32 --subset_size 512 --save_dir checkpoints_overfit --save_every 10000 --log_every 500"
 
 #! ── JOB B: short full run (~6-8 hours) ─────────────────────────────────────

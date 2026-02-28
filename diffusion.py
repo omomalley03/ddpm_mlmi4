@@ -99,3 +99,29 @@ class GaussianDiffusion:
             x = self.p_sample(model, x, t)
 
         return x
+
+    @torch.no_grad()
+    def p_sample_loop_progressive(self, model, shape, n_frames=10):
+        """Reverse process capturing intermediate denoising states.
+
+        Returns a list of n_frames tensors evenly spaced across the
+        denoising trajectory (t=T-1 down to t=0), suitable for
+        visualising the noise-to-image progression.
+        """
+        # Timesteps at which to save a frame, spread across [0, T-1]
+        # Always include t=0 (final image) and t=T-1 (pure noise)
+        save_at = set(
+            round(t) for t in
+            torch.linspace(self.T - 1, 0, n_frames).tolist()
+        )
+
+        x = torch.randn(shape, device=self.device)
+        frames = []
+
+        for t in reversed(range(self.T)):
+            x = self.p_sample(model, x, t)
+            if t in save_at:
+                frames.append(x.clone())
+
+        # frames[0] = most noisy saved state, frames[-1] = final image
+        return frames
