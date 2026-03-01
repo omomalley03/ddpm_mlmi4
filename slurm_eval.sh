@@ -26,7 +26,7 @@ OUTPUT_DIR="."
 module purge
 module load rhel8/default-amp
 
-PYTHON_EXEC=/rds/project/rds-xyBFuSj0hm0/MLMI2.M2025/miniconda3/envs/mlmi2/bin/python
+PYTHON_EXEC="$HOME/ddpm_venv/bin/python"
 
 workdir="$SLURM_SUBMIT_DIR"
 export OMP_NUM_THREADS=1

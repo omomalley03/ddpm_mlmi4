@@ -41,7 +41,7 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 module purge
 module load rhel8/default-amp
 
-PYTHON_EXEC=/rds/project/rds-xyBFuSj0hm0/MLMI2.M2025/miniconda3/envs/mlmi2/bin/python
+PYTHON_EXEC="$HOME/ddpm_venv/bin/python"
 application="$PYTHON_EXEC -u run.py"
 
 workdir="$SLURM_SUBMIT_DIR"

@@ -45,7 +45,7 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 module purge                               # Removes all modules still loaded
 module load rhel8/default-amp              # REQUIRED - loads the basic environment
 
-PYTHON_EXEC=/rds/project/rds-xyBFuSj0hm0/MLMI2.M2025/miniconda3/envs/mlmi2/bin/python
+PYTHON_EXEC="$HOME/ddpm_venv/bin/python"
 application="$PYTHON_EXEC -u run.py"
 
 #! Work directory (i.e. where the job will run):
