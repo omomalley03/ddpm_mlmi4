@@ -25,7 +25,7 @@ from model import UNet
 
 def load_inception(device):
     """Load pretrained InceptionV3 with a hook to extract pool3 features."""
-    inception = models.inception_v3(pretrained=True, transform_input=False)
+    inception = models.inception_v3(pretrained=True, transform_input=True)
     inception.eval()
     inception.to(device)
 

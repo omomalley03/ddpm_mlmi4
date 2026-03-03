@@ -4,6 +4,12 @@ Entry point for DDPM training and sampling.
 Usage:
     python run.py --mode train --total_steps 1300000
     python run.py --mode sample --resume checkpoints/ckpt_1300000.pt --n_samples 64
+
+Latent Diffusion:
+    python run.py --mode train_vae --total_epochs 50
+    python run.py --mode precompute --vae_checkpoint checkpoints_vae/vae_epoch50.pt
+    python run.py --mode train_latent --latent_path data/celeba_latents.pt --total_steps 500000
+    python run.py --mode sample_latent --resume checkpoints_latent/latent_ckpt_500000.pt --vae_checkpoint checkpoints_vae/vae_epoch50.pt
 """
 
 import argparse
@@ -12,7 +18,9 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="DDPM - Denoising Diffusion Probabilistic Models")
 
-    parser.add_argument("--mode", type=str, default="train", choices=["train", "sample", "denoise", "eval"])
+    parser.add_argument("--mode", type=str, default="train",
+                        choices=["train", "sample", "denoise", "eval",
+                                 "train_vae", "precompute", "train_latent", "sample_latent"])
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=2e-4)
@@ -34,6 +42,16 @@ def main():
     parser.add_argument("--n_frames", type=int, default=10,
                         help="Number of timestep columns in the denoising progression grid")
     parser.add_argument("--output_dir", type=str, default="samples")
+
+    # Latent diffusion args
+    parser.add_argument("--vae_checkpoint", type=str, default=None,
+                        help="Path to trained VAE checkpoint")
+    parser.add_argument("--latent_path", type=str, default="data/celeba_latents.pt",
+                        help="Path to precomputed latent tensors")
+    parser.add_argument("--total_epochs", type=int, default=50,
+                        help="Total epochs for VAE training")
+    parser.add_argument("--kl_weight", type=float, default=1e-4,
+                        help="KL divergence weight for VAE training")
 
     args = parser.parse_args()
 
@@ -87,6 +105,68 @@ def main():
             output_dir=args.output_dir,
             device=args.device,
             image_size=args.image_size,
+        )
+
+    # --- Latent Diffusion modes ---
+
+    elif args.mode == "train_vae":
+        from train_vae import train_vae
+        train_vae(
+            dataset=args.dataset if args.dataset != "cifar10" else "celeba_hq",
+            image_size=256,
+            batch_size=args.batch_size if args.batch_size != 128 else 16,
+            lr=args.lr if args.lr != 2e-4 else 1e-4,
+            total_epochs=args.total_epochs,
+            kl_weight=args.kl_weight,
+            save_dir=args.save_dir if args.save_dir != "checkpoints" else "checkpoints_vae",
+            save_every=10,
+            log_every=args.log_every if args.log_every != 1000 else 100,
+            resume=args.resume,
+            device=args.device,
+            num_workers=args.num_workers,
+        )
+
+    elif args.mode == "precompute":
+        if args.vae_checkpoint is None:
+            parser.error("--vae_checkpoint is required for precompute mode")
+        from precompute_latents import precompute_latents
+        precompute_latents(
+            vae_checkpoint=args.vae_checkpoint,
+            dataset=args.dataset if args.dataset != "cifar10" else "celeba_hq",
+            image_size=256,
+            batch_size=32,
+            output_path=args.latent_path,
+            device=args.device,
+            num_workers=args.num_workers,
+        )
+
+    elif args.mode == "train_latent":
+        from train_latent import train_latent
+        train_latent(
+            latent_path=args.latent_path,
+            batch_size=args.batch_size,
+            lr=args.lr,
+            total_steps=args.total_steps if args.total_steps != 1_300_000 else 500_000,
+            save_dir=args.save_dir if args.save_dir != "checkpoints" else "checkpoints_latent",
+            save_every=args.save_every,
+            log_every=args.log_every,
+            resume=args.resume,
+            device=args.device,
+            num_workers=args.num_workers,
+        )
+
+    elif args.mode == "sample_latent":
+        if args.resume is None:
+            parser.error("--resume is required for sample_latent mode")
+        if args.vae_checkpoint is None:
+            parser.error("--vae_checkpoint is required for sample_latent mode")
+        from sample_latent import sample_latent
+        sample_latent(
+            diffusion_checkpoint=args.resume,
+            vae_checkpoint=args.vae_checkpoint,
+            n_samples=args.n_samples,
+            output_dir=args.output_dir if args.output_dir != "samples" else "samples_latent",
+            device=args.device,
         )
 
 
