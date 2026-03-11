@@ -11,12 +11,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=04:00:00
+#SBATCH --time=06:00:00
 #SBATCH -p ampere
 #SBATCH --mail-type=NONE
 
 #! ── Edit these ──────────────────────────────────────────────────────────────
-CHECKPOINT="checkpoints/ckpt_1300000.pt"
+CHECKPOINT="checkpoints/ckpt_550000.pt"
 N_EVAL=50000        # 50k is the standard for CIFAR-10 FID/IS
 BATCH_SIZE=128
 OUTPUT_DIR="."

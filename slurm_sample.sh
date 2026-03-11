@@ -17,11 +17,11 @@
 #SBATCH --mail-type=NONE
 
 #! ── Edit these ──────────────────────────────────────────────────────────────
-CHECKPOINT="checkpoints_overfit/ckpt_50000.pt"
-MODE="denoise"       # "sample" or "denoise"
-N_SAMPLES=4
+CHECKPOINT="checkpoints/ckpt_650000.pt"
+MODE="sample"       # "sample" or "denoise"
+N_SAMPLES=16
 N_FRAMES=10          # columns in the progression grid (denoise mode only)
-OUTPUT_DIR="samples_overfit"
+OUTPUT_DIR="samples/650000"
 #! ────────────────────────────────────────────────────────────────────────────
 
 . /etc/profile.d/modules.sh

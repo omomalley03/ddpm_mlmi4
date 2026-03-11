@@ -11,6 +11,7 @@ samples/
 # SLURM logs and node files
 logs/
 machine.file.*
+*.out
 
 # Python
 __pycache__/
