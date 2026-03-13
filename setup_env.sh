@@ -20,11 +20,15 @@ echo "Creating venv at:  $VENV_DIR"
 # --system-site-packages: inherit torch, torchvision, numpy, pillow, etc. from mlmi2
 $MLMI2_PYTHON -m venv --system-site-packages "$VENV_DIR"
 
-echo "Installing additional packages (scipy, datasets)..."
-"$VENV_DIR/bin/pip" install --quiet scipy datasets
+echo "Installing additional packages (scipy, datasets, matplotlib, scikit-learn)..."
+"$VENV_DIR/bin/pip" install --quiet scipy datasets matplotlib scikit-learn
 
 echo ""
 echo "Done. Venv ready at $VENV_DIR"
 echo "Python: $VENV_DIR/bin/python"
 echo ""
-"$VENV_DIR/bin/python" -c "import torch, torchvision, numpy, scipy, datasets; print(f'torch {torch.__version__}, scipy {scipy.__version__}, datasets {datasets.__version__} — all OK')"
+"$VENV_DIR/bin/python" -c "
+import torch, torchvision, numpy, scipy, datasets, matplotlib, sklearn
+print(f'torch {torch.__version__}, scipy {scipy.__version__}, datasets {datasets.__version__}')
+print(f'matplotlib {matplotlib.__version__}, sklearn {sklearn.__version__} — all OK')
+"
