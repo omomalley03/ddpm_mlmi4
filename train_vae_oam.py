@@ -1,7 +1,7 @@
 """
 VAE training on OAM laser beam images.
 
-Architecture: 320×320×1 → (4 downsampling stages) → 20×20×8 latent
+Architecture: 320×320×1 → (5 downsampling stages) → 10×10×4 latent
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4)
 
 Usage:
@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 from vae import VAE
 from dataset_oam import get_oam_dataloader
 
-# OAM VAE config: 320→160→80→40→20, latent = 20×20×8
-OAM_CHANNEL_MULTS = (1, 2, 4, 4)
-OAM_LATENT_DIM = 8
+# OAM VAE config: 320→160→80→40→20→10, latent = 10×10×4 = 400 dims
+OAM_CHANNEL_MULTS = (1, 2, 4, 4, 4)
+OAM_LATENT_DIM = 4
 OAM_BASE_CHANNELS = 64
 
 
@@ -50,7 +50,7 @@ def train_vae_oam(
 
     param_count = sum(p.numel() for p in vae.parameters())
     print(f"VAE parameters: {param_count:,}")
-    print(f"Latent shape per image: ({OAM_LATENT_DIM}, 20, 20) = {OAM_LATENT_DIM*20*20} dims")
+    print(f"Latent shape per image: ({OAM_LATENT_DIM}, 10, 10) = {OAM_LATENT_DIM*10*10} dims")
 
     optimizer = torch.optim.Adam(vae.parameters(), lr=lr)
 
