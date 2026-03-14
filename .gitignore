@@ -23,3 +23,6 @@ __pycache__/
 
 # Jupyter
 .ipynb_checkpoints/
+
+
+slurm-*.out
