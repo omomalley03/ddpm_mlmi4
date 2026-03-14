@@ -17,6 +17,31 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 import scipy.io
+import h5py
+
+
+def _load_mat(mat_path, keys=None):
+    """Load a .mat file, supporting both legacy (<v7.3) and HDF5 (v7.3) formats.
+
+    Args:
+        keys: Optional list of variable names to load. If None, loads everything.
+              Use this to avoid reading the full file when only a subset is needed.
+    """
+    try:
+        mat = scipy.io.loadmat(mat_path)
+        if keys is not None:
+            return {k: mat[k] for k in keys if k in mat}
+        return mat
+    except NotImplementedError:
+        # MATLAB v7.3 (HDF5) — h5py returns arrays in C order (dims reversed vs MATLAB).
+        # Transpose each array so shapes match what scipy.io.loadmat would return.
+        data = {}
+        with h5py.File(mat_path, "r") as f:
+            target_keys = keys if keys is not None else list(f.keys())
+            for key in target_keys:
+                if key in f and isinstance(f[key], h5py.Dataset):
+                    data[key] = f[key][()].T
+        return data
 
 
 # Modes to use (subset of: gauss, p1, p2, p3, p4, n1, n2, n3)
@@ -25,13 +50,13 @@ MODES = ["gauss", "p4"]
 # Human-readable labels for plotting
 MODE_DISPLAY = {
     "gauss": "Gaussian",
-    "p1": "OAM ℓ=+1",
-    "p2": "OAM ℓ=+2",
-    "p3": "OAM ℓ=+3",
-    "p4": "OAM ℓ=+4",
-    "n1": "OAM ℓ=−1",
-    "n2": "OAM ℓ=−2",
-    "n3": "OAM ℓ=−3",
+    "p1": "OAM ell=+1",
+    "p2": "OAM ell=+2",
+    "p3": "OAM ell=+3",
+    "p4": "OAM ell=+4",
+    "n1": "OAM ell=-1",
+    "n2": "OAM ell=-2",
+    "n3": "OAM ell=-3",
 }
 
 
@@ -49,7 +74,8 @@ class OAMDataset(Dataset):
         if modes is None:
             modes = MODES
 
-        data = scipy.io.loadmat(mat_path)
+        needed_keys = [f"{m}_X" for m in modes] + [f"{m}_labels" for m in modes]
+        data = _load_mat(mat_path, keys=needed_keys)
         self._check_keys(data, modes)
 
         images_list = []

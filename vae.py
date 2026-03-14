@@ -4,7 +4,7 @@ Variational Autoencoder for Latent Diffusion / Latent Space Visualization.
 Supports arbitrary input sizes and depths via channel_mults.
 
 Examples:
-    CelebA-HQ 256×256 RGB   → VAE(in_channels=3, channel_mults=(1,2,4))   → 32×32×4 latent
+    CelebA-HQ 256x256 RGB   → VAE(in_channels=3, channel_mults=(1,2,4))   → 32×32×4 latent
     OAM 320×320 grayscale   → VAE(in_channels=1, channel_mults=(1,2,4,4)) → 20×20×8 latent
 
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4 default).
