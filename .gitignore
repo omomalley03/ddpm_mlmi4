@@ -30,3 +30,5 @@ slurm-*.out
 
 *.mat
 vae_omo.py
+
+*.png
