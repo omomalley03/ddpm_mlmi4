@@ -208,7 +208,7 @@ def plot_interpolation(vae, dataset, device, output_dir, n_steps=10,
     plt.suptitle(f"Latent Interpolation: {name_a} → {name_b}", fontsize=10)
     plt.tight_layout()
 
-    fname = f"interpolation_{dataset.modes[mode_a]}_to_{dataset.modes[mode_b]}.png"
+    fname = f"interpolation_{dataset.modes[mode_a]}_to_{dataset.modes[mode_b]}_.png"
     out_path = os.path.join(output_dir, fname)
     plt.savefig(out_path, dpi=120, bbox_inches="tight")
     plt.close()
@@ -399,7 +399,7 @@ def visualize_oam(
         for i in range(n_modes):
             for j in range(i + 1, min(i + 3, n_modes)):  # nearest neighbours only
                 plot_interpolation(vae, dataset, device, output_dir,
-                                   n_steps=10, mode_a=i, mode_b=j)
+                                   n_steps=10, mode_a=i, mode_b=j, turb_level=4)
 
     # 3. PCA traversal
     if traversal:

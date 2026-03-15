@@ -212,10 +212,10 @@ def main():
             output_dir=args.output_dir if args.output_dir != "samples" else "vis_oam",
             device=args.device,
             tsne=not args.no_tsne,
-            pca_scatter=True,
+            pca_scatter=False,
             interpolation=True,
-            traversal=True,
-            reconstruction=True,
+            traversal=False,
+            reconstruction=False,
         )
 
 

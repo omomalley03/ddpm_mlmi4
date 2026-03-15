@@ -20,12 +20,12 @@
 #! ######################################################################################
 #! Set options here:
 
-MAT_PATH="/home/omo26/rds/hpc-work/OAM/classify_environment/pupil_only/DATA_classify_environment_2_2_all_beams.mat"
-VAE_CHECKPOINT="checkpoints_vae_oam/vae_oam_epoch100.pt"
+MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
+VAE_CHECKPOINT="checkpoints_vae_oam/vae_oam_epoch30.pt"
 
-options="--mode visualize_oam --vae_checkpoint $VAE_CHECKPOINT --mat_path $MAT_PATH --output_dir vis_oam"
+options="--mode visualize_oam --vae_checkpoint $VAE_CHECKPOINT --mat_path $MAT_PATH --output_dir vis_oam2 --no_tsne"
 
-#! Add --no_tsne to skip t-SNE (much faster, use if dataset is large):
+#! Add --no_tsne to skip t-SNE (takes long):
 #! options="$options --no_tsne"
 
 #! ######################################################################################

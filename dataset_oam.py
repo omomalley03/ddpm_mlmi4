@@ -150,7 +150,7 @@ class OAMDataset(Dataset):
 
 
 def get_oam_dataloader(mat_path, batch_size=32, modes=None, image_size=None,
-                       num_workers=4, shuffle=True):
+                       num_workers=0, shuffle=True):
     """Create a DataLoader for OAM beam images."""
     dataset = OAMDataset(mat_path, modes=modes, image_size=image_size)
     return DataLoader(

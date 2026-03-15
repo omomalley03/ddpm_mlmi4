@@ -128,8 +128,8 @@ def _save_recon_grid(vae, dataset, device, save_dir, epoch):
         for row, mode_idx in enumerate(range(n_modes)):
             # Find n_cols samples from this mode
             mode_indices = (dataset.mode_labels == mode_idx).nonzero()[0]
-            sample_indices = mode_indices[: n_cols]
-
+            sample_indices = mode_indices[torch.randperm(len(mode_indices))[:n_cols]]
+            
             for col, idx in enumerate(sample_indices):
                 img, _, _ = dataset[idx]
                 img_in = img.unsqueeze(0).to(device)

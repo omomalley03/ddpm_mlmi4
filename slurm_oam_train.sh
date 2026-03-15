@@ -12,16 +12,16 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=12:00:00
+#SBATCH --time=1:00:00
 #SBATCH --mail-type=NONE
 #SBATCH -p ampere
 
 #! ######################################################################################
 #! Set options here:
 
-MAT_PATH="/home/omo26/rds/hpc-work/OAM/classify_environment/pupil_only/DATA_classify_environment_2_2_all_beams.mat"
+MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
 
-options="--mode train_vae_oam --mat_path $MAT_PATH --total_epochs 100 --batch_size 32 --lr 1e-4 --kl_weight 1e-4 --save_dir checkpoints_vae_oam --log_every 50"
+options="--mode train_vae_oam --mat_path $MAT_PATH --total_epochs 50 --batch_size 32 --lr 1e-4 --kl_weight 1e-4 --save_dir checkpoints_vae_oam_2 --log_every 50"
 
 #! To resume from a checkpoint:
 #! options="$options --resume checkpoints_vae_oam/vae_oam_epoch50.pt"
