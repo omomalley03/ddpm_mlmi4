@@ -25,7 +25,7 @@ def main():
     parser.add_argument("--mode", type=str, default="train",
                         choices=["train", "sample", "denoise", "eval",
                                  "train_vae", "precompute", "train_latent", "sample_latent",
-                                 "train_vae_oam", "visualize_oam"])
+                                 "train_vae_oam", "visualize_oam", "train_ddpm_oam", "sample_oam"])
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=2e-4)
@@ -86,6 +86,17 @@ def main():
         if args.resume is None:
             parser.error("--resume is required for sampling")
         from sample import sample
+        sample(
+            checkpoint_path=args.resume,
+            n_samples=args.n_samples,
+            output_dir=args.output_dir,
+            device=args.device,
+            image_size=args.image_size,
+        )
+    elif args.mode == "sample_oam":
+        if args.resume is None:
+            parser.error("--resume is required for sample_oam mode")
+        from sample_oam import sample
         sample(
             checkpoint_path=args.resume,
             n_samples=args.n_samples,
@@ -179,6 +190,24 @@ def main():
             output_dir=args.output_dir if args.output_dir != "samples" else "samples_latent",
             device=args.device,
         )
+    elif args.mode == "train_ddpm_oam":
+        if args.mat_path is None:
+            parser.error("--mat_path is required for train_ddpm_oam mode")
+        from train_ddpm_oam import train
+        train(
+            mat_path=args.mat_path,
+            batch_size=args.batch_size,
+            lr=args.lr,
+            total_steps=args.total_steps,
+            save_dir=args.save_dir if args.save_dir != "checkpoints" else "checkpoints_ddpm_oam",
+            save_every=args.save_every,
+            log_every=args.log_every,
+            resume=args.resume,
+            device=args.device,
+            image_size=args.image_size,
+            num_workers=args.num_workers,
+            subset_size=args.subset_size,
+        )
 
     # --- OAM modes ---
 
@@ -190,7 +219,7 @@ def main():
             mat_path=args.mat_path,
             batch_size=args.batch_size if args.batch_size != 128 else 32,
             lr=args.lr if args.lr != 2e-4 else 1e-4,
-            total_epochs=args.total_epochs if args.total_epochs != 50 else 100,
+            total_epochs=args.total_epochs,
             kl_weight=args.kl_weight,
             save_dir=args.save_dir if args.save_dir != "checkpoints" else "checkpoints_vae_oam",
             save_every=10,
