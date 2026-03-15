@@ -66,10 +66,12 @@ class GaussianDiffusion:
         loss = F.mse_loss(predicted_noise, noise)
         return loss
 
+
+    # BELOW FUNCTIONS ARE FOR SAMPLING (REVERSE PROCESS) ONLY - NOT USED DURING TRAINING
     @torch.no_grad()
     def p_sample(self, model, x_t, t):
         """Single reverse step: sample x_{t-1} given x_t.
-
+        Equation 11 in Ho et al
         x_{t-1} = 1/sqrt(alpha_t) * (x_t - (1-alpha_t)/sqrt(1-alpha_bar_t) * eps_theta) + sigma_t * z
         """
         batch_size = x_t.shape[0]

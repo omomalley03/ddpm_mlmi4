@@ -1,25 +1,32 @@
 #!/bin/bash
 #!
-#! SLURM job script for VAE training on CelebA-HQ 256×256 (Wilkes3 A100)
+#! SLURM job script for OAM latent space visualization on Wilkes3 (A100)
 #!
-#! Run after setup_env.sh. Trains the encoder/decoder for latent diffusion.
-#! After completion, run slurm_precompute.sh then slurm_latent.sh.
+#! Run after slurm_oam_train.sh completes.
+#! Produces PCA scatter, t-SNE scatter, interpolations, PCA traversal,
+#! and reconstruction grid. All saved to vis_oam/.
 #!
-#! Edit the options block below, then: sbatch slurm_vae.sh
+#! Edit VAE_CHECKPOINT below, then: sbatch slurm_oam_visualize.sh
 
-#SBATCH -J vae_celeba
+#SBATCH -J oam_vis
 #SBATCH -A MLMI-omo26-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=10:00:00
+#SBATCH --time=02:00:00
 #SBATCH --mail-type=NONE
 #SBATCH -p ampere
 
 #! ######################################################################################
 #! Set options here:
 
-options="--mode train_vae --total_epochs 50 --batch_size 16 --lr 1e-4 --kl_weight 1e-4 --log_every 100 --save_dir checkpoints_vae"
+MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
+VAE_CHECKPOINT="checkpoints_vae_oam/vae_oam_epoch30.pt"
+
+options="--mode visualize_oam --vae_checkpoint $VAE_CHECKPOINT --mat_path $MAT_PATH --output_dir vis_oam2 --no_tsne"
+
+#! Add --no_tsne to skip t-SNE (takes long):
+#! options="$options --no_tsne"
 
 #! ######################################################################################
 
@@ -39,9 +46,9 @@ export OMP_NUM_THREADS=1
 
 cd $workdir
 echo -e "Changed directory to `pwd`.\n"
-mkdir -p logs checkpoints_vae
+mkdir -p logs vis_oam
 JOBID=$SLURM_JOB_ID
-CMD="$application $options > logs/vae.$JOBID"
+CMD="$application $options > logs/oam_vis.$JOBID"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"

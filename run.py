@@ -5,11 +5,15 @@ Usage:
     python run.py --mode train --total_steps 1300000
     python run.py --mode sample --resume checkpoints/ckpt_1300000.pt --n_samples 64
 
-Latent Diffusion:
+Latent Diffusion (CelebA-HQ):
     python run.py --mode train_vae --total_epochs 50
     python run.py --mode precompute --vae_checkpoint checkpoints_vae/vae_epoch50.pt
     python run.py --mode train_latent --latent_path data/celeba_latents.pt --total_steps 500000
     python run.py --mode sample_latent --resume checkpoints_latent/latent_ckpt_500000.pt --vae_checkpoint checkpoints_vae/vae_epoch50.pt
+
+OAM Laser Beams:
+    python run.py --mode train_vae_oam --mat_path /path/to/data.mat
+    python run.py --mode visualize_oam --vae_checkpoint checkpoints_vae_oam/vae_oam_epoch100.pt --mat_path /path/to/data.mat
 """
 
 import argparse
@@ -20,7 +24,8 @@ def main():
 
     parser.add_argument("--mode", type=str, default="train",
                         choices=["train", "sample", "denoise", "eval",
-                                 "train_vae", "precompute", "train_latent", "sample_latent"])
+                                 "train_vae", "precompute", "train_latent", "sample_latent",
+                                 "train_vae_oam", "visualize_oam"])
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=2e-4)
@@ -52,6 +57,12 @@ def main():
                         help="Total epochs for VAE training")
     parser.add_argument("--kl_weight", type=float, default=1e-4,
                         help="KL divergence weight for VAE training")
+
+    # OAM args
+    parser.add_argument("--mat_path", type=str, default=None,
+                        help="Path to OAM .mat data file")
+    parser.add_argument("--no_tsne", action="store_true",
+                        help="Skip t-SNE (slow for large datasets)")
 
     args = parser.parse_args()
 
@@ -167,6 +178,44 @@ def main():
             n_samples=args.n_samples,
             output_dir=args.output_dir if args.output_dir != "samples" else "samples_latent",
             device=args.device,
+        )
+
+    # --- OAM modes ---
+
+    elif args.mode == "train_vae_oam":
+        if args.mat_path is None:
+            parser.error("--mat_path is required for train_vae_oam mode")
+        from train_vae_oam import train_vae_oam
+        train_vae_oam(
+            mat_path=args.mat_path,
+            batch_size=args.batch_size if args.batch_size != 128 else 32,
+            lr=args.lr if args.lr != 2e-4 else 1e-4,
+            total_epochs=args.total_epochs if args.total_epochs != 50 else 100,
+            kl_weight=args.kl_weight,
+            save_dir=args.save_dir if args.save_dir != "checkpoints" else "checkpoints_vae_oam",
+            save_every=10,
+            log_every=args.log_every if args.log_every != 1000 else 50,
+            resume=args.resume,
+            device=args.device,
+            num_workers=args.num_workers,
+        )
+
+    elif args.mode == "visualize_oam":
+        if args.vae_checkpoint is None:
+            parser.error("--vae_checkpoint is required for visualize_oam mode")
+        if args.mat_path is None:
+            parser.error("--mat_path is required for visualize_oam mode")
+        from visualize_latent import visualize_oam
+        visualize_oam(
+            vae_checkpoint=args.vae_checkpoint,
+            mat_path=args.mat_path,
+            output_dir=args.output_dir if args.output_dir != "samples" else "vis_oam",
+            device=args.device,
+            tsne=not args.no_tsne,
+            pca_scatter=False,
+            interpolation=True,
+            traversal=False,
+            reconstruction=False,
         )
 
 

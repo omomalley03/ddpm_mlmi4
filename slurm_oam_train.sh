@@ -1,28 +1,30 @@
 #!/bin/bash
 #!
-#! SLURM job script for precomputing CelebA-HQ latents (~30 min on A100)
+#! SLURM job script for OAM VAE training on Wilkes3 (A100)
 #!
-#! Run after slurm_vae.sh completes. Encodes the entire CelebA-HQ dataset
-#! with the trained VAE encoder and saves latents to disk.
+#! Trains a VAE on OAM laser beam intensity images (320×320 grayscale).
+#! Architecture: 320→160→80→40→20, latent = 20×20×8
 #!
-#! Edit VAE_CHECKPOINT below, then: sbatch slurm_precompute.sh
+#! sbatch slurm_oam_train.sh
 
-#SBATCH -J precompute_latents
+#SBATCH -J oam_vae
 #SBATCH -A MLMI-omo26-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=01:00:00
+#SBATCH --time=1:00:00
 #SBATCH --mail-type=NONE
 #SBATCH -p ampere
 
 #! ######################################################################################
 #! Set options here:
 
-VAE_CHECKPOINT="checkpoints_vae/vae_epoch50.pt"
-LATENT_PATH="data/celeba_latents.pt"
+MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
 
-options="--mode precompute --vae_checkpoint $VAE_CHECKPOINT --latent_path $LATENT_PATH"
+options="--mode train_vae_oam --mat_path $MAT_PATH --total_epochs 50 --batch_size 32 --lr 1e-4 --kl_weight 1e-4 --save_dir checkpoints_vae_oam_2 --log_every 50"
+
+#! To resume from a checkpoint:
+#! options="$options --resume checkpoints_vae_oam/vae_oam_epoch50.pt"
 
 #! ######################################################################################
 
@@ -42,14 +44,15 @@ export OMP_NUM_THREADS=1
 
 cd $workdir
 echo -e "Changed directory to `pwd`.\n"
-mkdir -p logs data
+mkdir -p logs checkpoints_vae_oam
 JOBID=$SLURM_JOB_ID
-CMD="$application $options > logs/precompute.$JOBID"
+CMD="$application $options > logs/oam_train.$JOBID"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"
 echo "Running on master node: `hostname`"
 echo "Current directory: `pwd`"
+echo "MAT_PATH: $MAT_PATH"
 
 echo -e "\nnumtasks=$numtasks, numnodes=$numnodes, mpi_tasks_per_node=$mpi_tasks_per_node (OMP_NUM_THREADS=$OMP_NUM_THREADS)"
 echo -e "\nExecuting command:\n==================\n$CMD\n"
