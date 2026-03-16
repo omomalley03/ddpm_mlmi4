@@ -6,7 +6,7 @@
 #! Job B (short full run, ~6-8 hours): uncomment the "JOB B" options block.
 #!
 #! After Job A completes, generate samples manually:
-#!   python run.py --mode sample --resume checkpoints_overfit/ckpt_50000.pt --n_samples 16
+#!   python run.py --mode sample_oam --resume checkpoints_oam_overfit/ckpt_50000.pt --n_samples 16 --image_size 128
 #!
 #! Pass criteria:
 #!   - Initial loss (step ~100): 0.9–1.1
@@ -22,13 +22,15 @@
 #SBATCH -p ampere
 #SBATCH --mail-type=NONE
 
+MAT_PATH="/home/omo26/rds/hpc-work/OAM/classify_environment/pupil_only/DATA_classify_environment_2_2_all_beams.mat"
+
 #! ── JOB A: overfit test (~1.5 hours) ──────────────────────────────────────
 #SBATCH --time=04:00:00
-options="--mode train_ddpm_oam --mat_path croped_2_2_pupil_data.mat --total_steps 50000 --batch_size 32 --save_dir checkpoints_oam_overfit --save_every 10000 --log_every 500 --image_size=128"
+options="--mode train_ddpm_oam --mat_path $MAT_PATH --total_steps 50000 --batch_size 32 --save_dir checkpoints_oam_overfit --save_every 10000 --log_every 500 --image_size 128 --num_workers 0"
 #! ── JOB B: short full run (~6-8 hours) ─────────────────────────────────────
 #! To use Job B instead, comment out the two lines above and uncomment these:
 ##SBATCH --time=10:00:00
-#options="--mode train --total_steps 200000 --batch_size 128 --save_dir checkpoints_short --save_every 10000 --log_every 1000"
+#options="--mode train_ddpm_oam --mat_path $MAT_PATH --total_steps 200000 --batch_size 32 --save_dir checkpoints_oam_short --save_every 10000 --log_every 1000 --image_size 128 --num_workers 0"
 
 #! ────────────────────────────────────────────────────────────────────────────
 
@@ -48,9 +50,9 @@ export OMP_NUM_THREADS=1
 
 cd $workdir
 echo -e "Changed directory to `pwd`.\n"
-mkdir -p logs checkpoints_overfit checkpoints_short
+mkdir -p logs checkpoints_oam_overfit checkpoints_oam_short
 JOBID=$SLURM_JOB_ID
-CMD="$application $options > logs/out.$JOBID"
+CMD="$application $options > logs/out.$JOBID 2>&1"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"

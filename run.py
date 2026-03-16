@@ -119,7 +119,7 @@ def main():
     elif args.mode == "denoise":
         if args.resume is None:
             parser.error("--resume is required for denoise mode")
-        from sample import sample_progression
+        from sample_oam import sample_progression
         sample_progression(
             checkpoint_path=args.resume,
             n_samples=args.n_samples,
@@ -205,7 +205,7 @@ def main():
             resume=args.resume,
             device=args.device,
             image_size=args.image_size,
-            num_workers=args.num_workers,
+            num_workers=0,  # h5py + forked workers is unsafe
             subset_size=args.subset_size,
         )
 
@@ -226,7 +226,7 @@ def main():
             log_every=args.log_every if args.log_every != 1000 else 50,
             resume=args.resume,
             device=args.device,
-            num_workers=args.num_workers,
+            num_workers=0,  # h5py lazy dataset: no multiprocess workers
         )
 
     elif args.mode == "visualize_oam":

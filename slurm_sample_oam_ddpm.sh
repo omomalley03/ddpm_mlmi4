@@ -37,7 +37,7 @@ cd $workdir
 mkdir -p logs $OUTPUT_DIR
 JOBID=$SLURM_JOB_ID
 
-CMD="$PYTHON_EXEC -u run.py --mode $MODE --resume $CHECKPOINT --n_samples $N_SAMPLES --n_frames $N_FRAMES --output_dir $OUTPUT_DIR --image_size 128 --device cuda > logs/sample.$JOBID"
+CMD="$PYTHON_EXEC -u run.py --mode $MODE --resume $CHECKPOINT --n_samples $N_SAMPLES --n_frames $N_FRAMES --output_dir $OUTPUT_DIR --image_size 128 --device cuda > logs/sample.$JOBID 2>&1"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"

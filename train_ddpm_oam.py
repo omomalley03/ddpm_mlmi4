@@ -10,13 +10,14 @@ Training loop for DDPM with EMA (Ho et al. 2020).
 import copy
 import os
 import torch
+from torch.utils.data import DataLoader, Subset
 
 from diffusion import GaussianDiffusion
 from model import UNet
+from torchvision.utils import save_image
 
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend for HPC
-import matplotlib.pyplot as plt
 
 from dataset_oam import get_oam_dataloader
 
@@ -58,7 +59,7 @@ def train(
     resume=None,
     device="cuda",
     image_size=128,
-    num_workers=4,
+    num_workers=0,
     subset_size=None,
 ):
     """Main training function.
@@ -114,12 +115,27 @@ def train(
         mat_path, batch_size=batch_size, num_workers=num_workers, image_size=image_size,
     )
 
+    if subset_size is not None:
+        n = min(subset_size, len(dataset))
+        dataset = Subset(dataset, range(n))
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True,
+                                num_workers=num_workers, drop_last=True, pin_memory=True)
+        print(f"Using subset of {n} images")
+
     print(f"Dataset: {len(dataset)} images | Training on {device}")
     data_iter = iter(dataloader)
 
     param_count = sum(p.numel() for p in model.parameters())
     print(f"Model parameters: {param_count:,}")
     print(f"Training for {total_steps - start_step} steps on {device}")
+
+    # Fixed noise for consistent visual progress grids
+    sample_dir = os.path.join(save_dir, "samples")
+    os.makedirs(sample_dir, exist_ok=True)
+    _rng = torch.get_rng_state()
+    torch.manual_seed(42)
+    fixed_noise = torch.randn(4, 1, image_size, image_size, device=device)
+    torch.set_rng_state(_rng)
 
     model.train()
     running_loss = 0.0
@@ -156,7 +172,7 @@ def train(
             print(f"Step {step + 1}/{total_steps} | Loss: {avg_loss:.4f}")
             running_loss = 0.0
 
-        # Checkpointing
+        # Checkpointing + visual sample grid
         if (step + 1) % save_every == 0 or (step + 1) == total_steps:
             ckpt_path = os.path.join(save_dir, f"ckpt_{step + 1}.pt")
             torch.save(
@@ -169,5 +185,13 @@ def train(
                 ckpt_path,
             )
             print(f"Saved checkpoint: {ckpt_path}")
+
+            # Generate a small grid using EMA weights to monitor quality
+            with torch.no_grad():
+                imgs = diffusion.p_sample_loop(ema.shadow, fixed_noise.shape, noise=fixed_noise.clone())
+                imgs = ((imgs + 1.0) / 2.0).clamp(0.0, 1.0)
+            grid_path = os.path.join(sample_dir, f"grid_{step + 1}.png")
+            save_image(imgs, grid_path, nrow=4)
+            print(f"Saved sample grid: {grid_path}")
 
     print("Training complete.")

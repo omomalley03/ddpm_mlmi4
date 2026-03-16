@@ -90,16 +90,24 @@ class GaussianDiffusion:
             return mean
 
     @torch.no_grad()
-    def p_sample_loop(self, model, shape):
+    def p_sample_loop(self, model, shape, noise=None):
         """Full reverse process: generate images from pure noise.
 
         Algorithm 2 from the paper.
+
+        Args:
+            noise: Optional starting noise tensor of shape `shape`. If None,
+                   samples fresh Gaussian noise. Pass a fixed tensor to get
+                   reproducible outputs (e.g. for training progress grids).
         """
-        x = torch.randn(shape, device=self.device)
+        x = noise if noise is not None else torch.randn(shape, device=self.device)
 
         for t in reversed(range(self.T)):
             x = self.p_sample(model, x, t)
+            if t % 200 == 0:
+                print(f"\rSampling: {self.T - t}/{self.T} steps", end="", flush=True)
 
+        print()  # newline after progress
         return x
 
     @torch.no_grad()
