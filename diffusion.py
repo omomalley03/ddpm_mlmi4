@@ -142,6 +142,25 @@ class GaussianDiffusion:
 
 
     @torch.no_grad()
+    def p_sample_loop_from_t(self, model, x_t, t_start):
+        """Reverse process starting from a noised image x_t at timestep t_start.
+
+        Used for img2img: noise a real image to t_start, then reverse from there.
+
+        Args:
+            model: Noise prediction network.
+            x_t: Noisy image tensor at timestep t_start, shape (B, C, H, W).
+            t_start: Integer timestep to start reversing from (inclusive).
+
+        Returns:
+            Denoised image at t=0.
+        """
+        x = x_t.clone()
+        for t in reversed(range(t_start + 1)):
+            x = self.p_sample(model, x, t)
+        return x
+
+    @torch.no_grad()
     def p_sample_loop_progressive(self, model, shape, n_frames=10):
         """Reverse process capturing intermediate denoising states.
 
