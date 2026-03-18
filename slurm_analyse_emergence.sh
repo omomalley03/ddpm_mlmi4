@@ -23,7 +23,7 @@
 #SBATCH --mail-type=NONE
 
 #! ── Edit these ──────────────────────────────────────────────────────────────
-CHECKPOINT="checkpoints_ddpm_oam/ckpt_300000.pt"
+CHECKPOINT="checkpoints_oam_overfit/ckpt_40000.pt"
 OUTPUT_DIR="analysis_emergence"
 IMAGE_SIZE=128
 N_SEEDS=8        # number of random noise seeds to average metric over

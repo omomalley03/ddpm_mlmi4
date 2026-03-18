@@ -1,0 +1,28 @@
+Device: cuda
+Loaded EMA checkpoint from step 40000
+Loaded 7090 images from 2 modes
+  Modes: ['gauss', 'p4']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3, 4]
+Dataset: 7090 images | Modes: ['gauss', 'p4'] | Turb categories: [1, 2, 3, 4]
+
+--- Computing MSE curves (this may take a few minutes) ---
+  Computing MSE for turb level 1...
+    t* = 0
+  Computing MSE for turb level 2...
+    t* = 0
+  Computing MSE for turb level 3...
+    t* = 0
+  Computing MSE for turb level 4...
+    t* = 0
+
+--- Plotting MSE curves ---
+Saved: analysis_turb/mse_vs_t.png
+
+--- Plotting t* mapping ---
+Saved: analysis_turb/t_star_mapping.png
+
+--- Running img2img demo ---
+Saved: analysis_turb/img2img_demo.png
+
+Done. Outputs in: analysis_turb/
