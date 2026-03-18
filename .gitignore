@@ -1,0 +1,34 @@
+# Dataset (auto-downloaded, large)
+data/
+*.tar.gz
+
+# Checkpoints (large binary files)
+checkpoints*/
+*.pt
+
+# Generated samples
+
+# SLURM logs and node files
+
+machine.file.*
+*.out
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# macOS
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+
+slurm-*.out
+
+*.mat
+vae_omo.py
+
+data/*.tar.gz

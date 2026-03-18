@@ -1,0 +1,4 @@
+Loaded checkpoint from step 650000
+Generating 10 denoising trajectories (25 frames each)...
+Saved denoising progression grid: samples/650000/test05T_progression_step650000.png
+ Grid layout: 10 rows (samples) × 25 columns (timesteps)

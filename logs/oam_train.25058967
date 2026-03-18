@@ -1,0 +1,2 @@
+VAE parameters: 24,768,713
+Latent shape per image: (4, 10, 10) = 400 dims

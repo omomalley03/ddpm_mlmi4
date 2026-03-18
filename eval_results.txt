@@ -1,0 +1,6 @@
+Checkpoint: checkpoints/ckpt_550000.pt
+Step: 550000
+N_eval: 50000
+
+FID:  2.4337  (paper: 3.17)
+IS:   5.7565 +/- 0.0636  (paper: 9.46 +/- 0.11)

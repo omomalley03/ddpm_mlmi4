@@ -1,0 +1,12 @@
+VAE parameters: 24,768,713
+Latent shape per image: (4, 10, 10) = 400 dims
+Loaded 7090 images from 2 modes
+  Modes: ['gauss', 'p4']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3, 4]
+Dataset: 7090 images | Training on cuda
+Epoch 1/100 | Step 50 | Recon: 0.0189 | KL: 0.95
+Epoch 1/100 | Step 100 | Recon: 0.0089 | KL: 1.19
+Epoch 1/100 | Step 150 | Recon: 0.0090 | KL: 1.38
+Epoch 1/100 | Step 200 | Recon: 0.0042 | KL: 1.61
+Epoch 1/100 done | Avg Recon: 0.0146 | Avg KL: 1.17

@@ -1,0 +1,4 @@
+Loaded checkpoint from step 50000
+Generating 4 denoising trajectories (10 frames each)...
+Saved denoising progression grid: samples_overfit/progression_step50000.png
+  Grid layout: 4 rows (samples) × 10 columns (timesteps)

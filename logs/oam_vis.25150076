@@ -1,0 +1,39 @@
+Loaded VAE from epoch 30
+Loaded 7090 images from 2 modes
+  Modes: ['gauss', 'p4']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3, 4]
+
+Encoding dataset...
+  Encoded 640/7090
+  Encoded 1280/7090
+  Encoded 1920/7090
+  Encoded 2560/7090
+  Encoded 3200/7090
+  Encoded 3840/7090
+  Encoded 4480/7090
+  Encoded 5120/7090
+  Encoded 5760/7090
+  Encoded 6400/7090
+  Encoded 7040/7090
+Latent matrix shape: (7090, 64)
+
+--- PCA scatter ---
+Running PCA (2 dims)...
+Saved: vis_oam/latent_pca.png
+
+--- t-SNE scatter ---
+Running PCA (50 dims) then t-SNE (2 dims)...
+Saved: vis_oam/latent_tsne.png
+
+--- Interpolations ---
+Saved: vis_oam/interpolation_gauss_to_p4.png
+
+--- PCA traversal ---
+Fitting PCA on 7090 latent codes...
+Saved: vis_oam/pca_traversal.png
+
+--- Reconstruction grid ---
+Saved: vis_oam/reconstruction_grid.png
+
+All visualizations saved to vis_oam/

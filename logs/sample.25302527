@@ -1,0 +1,4 @@
+Loaded checkpoint from step 650000
+Generating 2 interpolations with (20 frames each)...
+Saved interpolation progression grid: samples_interpolate2/650000/progression_step650000.png
+  Grid layout: 2 rows (samples) x 20 columns (interp steps)

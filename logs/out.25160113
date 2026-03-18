@@ -1,0 +1,97 @@
+Loaded 7090 images from 2 modes
+  Modes: ['gauss', 'p4']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3, 4]
+Dataset: 7090 images | Training on cuda
+Model parameters: 34,882,689
+Training for 50000 steps on cuda
+Step 500/50000 | Loss: 0.0252
+Step 1000/50000 | Loss: 0.0111
+Step 1500/50000 | Loss: 0.0110
+Step 2000/50000 | Loss: 0.0100
+Step 2500/50000 | Loss: 0.0099
+Step 3000/50000 | Loss: 0.0092
+Step 3500/50000 | Loss: 0.0088
+Step 4000/50000 | Loss: 0.0083
+Step 4500/50000 | Loss: 0.0084
+Step 5000/50000 | Loss: 0.0074
+Step 5500/50000 | Loss: 0.0075
+Step 6000/50000 | Loss: 0.0063
+Step 6500/50000 | Loss: 0.0062
+Step 7000/50000 | Loss: 0.0066
+Step 7500/50000 | Loss: 0.0067
+Step 8000/50000 | Loss: 0.0067
+Step 8500/50000 | Loss: 0.0065
+Step 9000/50000 | Loss: 0.0065
+Step 9500/50000 | Loss: 0.0062
+Step 10000/50000 | Loss: 0.0063
+Saved checkpoint: checkpoints_oam_overfit/ckpt_10000.pt
+Step 10500/50000 | Loss: 0.0060
+Step 11000/50000 | Loss: 0.0059
+Step 11500/50000 | Loss: 0.0060
+Step 12000/50000 | Loss: 0.0061
+Step 12500/50000 | Loss: 0.0063
+Step 13000/50000 | Loss: 0.0063
+Step 13500/50000 | Loss: 0.0061
+Step 14000/50000 | Loss: 0.0058
+Step 14500/50000 | Loss: 0.0061
+Step 15000/50000 | Loss: 0.0057
+Step 15500/50000 | Loss: 0.0058
+Step 16000/50000 | Loss: 0.0059
+Step 16500/50000 | Loss: 0.0058
+Step 17000/50000 | Loss: 0.0062
+Step 17500/50000 | Loss: 0.0056
+Step 18000/50000 | Loss: 0.0060
+Step 18500/50000 | Loss: 0.0058
+Step 19000/50000 | Loss: 0.0053
+Step 19500/50000 | Loss: 0.0058
+Step 20000/50000 | Loss: 0.0057
+Saved checkpoint: checkpoints_oam_overfit/ckpt_20000.pt
+Step 20500/50000 | Loss: 0.0056
+Step 21000/50000 | Loss: 0.0055
+Step 21500/50000 | Loss: 0.0054
+Step 22000/50000 | Loss: 0.0063
+Step 22500/50000 | Loss: 0.0056
+Step 23000/50000 | Loss: 0.0052
+Step 23500/50000 | Loss: 0.0058
+Step 24000/50000 | Loss: 0.0057
+Step 24500/50000 | Loss: 0.0056
+Step 25000/50000 | Loss: 0.0058
+Step 25500/50000 | Loss: 0.0053
+Step 26000/50000 | Loss: 0.0053
+Step 26500/50000 | Loss: 0.0053
+Step 27000/50000 | Loss: 0.0055
+Step 27500/50000 | Loss: 0.0053
+Step 28000/50000 | Loss: 0.0058
+Step 28500/50000 | Loss: 0.0056
+Step 29000/50000 | Loss: 0.0053
+Step 29500/50000 | Loss: 0.0054
+Step 30000/50000 | Loss: 0.0057
+Saved checkpoint: checkpoints_oam_overfit/ckpt_30000.pt
+Step 30500/50000 | Loss: 0.0060
+Step 31000/50000 | Loss: 0.0056
+Step 31500/50000 | Loss: 0.0054
+Step 32000/50000 | Loss: 0.0057
+Step 32500/50000 | Loss: 0.0056
+Step 33000/50000 | Loss: 0.0055
+Step 33500/50000 | Loss: 0.0053
+Step 34000/50000 | Loss: 0.0053
+Step 34500/50000 | Loss: 0.0052
+Step 35000/50000 | Loss: 0.0053
+Step 35500/50000 | Loss: 0.0056
+Step 36000/50000 | Loss: 0.0057
+Step 36500/50000 | Loss: 0.0055
+Step 37000/50000 | Loss: 0.0054
+Step 37500/50000 | Loss: 0.0050
+Step 38000/50000 | Loss: 0.0055
+Step 38500/50000 | Loss: 0.0057
+Step 39000/50000 | Loss: 0.0053
+Step 39500/50000 | Loss: 0.0055
+Step 40000/50000 | Loss: 0.0051
+Saved checkpoint: checkpoints_oam_overfit/ckpt_40000.pt
+Step 40500/50000 | Loss: 0.0050
+Step 41000/50000 | Loss: 0.0051
+Step 41500/50000 | Loss: 0.0051
+Step 42000/50000 | Loss: 0.0055
+Step 42500/50000 | Loss: 0.0053
+Step 43000/50000 | Loss: 0.0054

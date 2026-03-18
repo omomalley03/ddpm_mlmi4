@@ -1,0 +1,149 @@
+Running evaluation on cuda
+Loaded checkpoint from step 350000
+
+Generating 10000 samples in batches of 128...
+  Generated 128/10000
+  Generated 256/10000
+  Generated 384/10000
+  Generated 512/10000
+  Generated 640/10000
+  Generated 768/10000
+  Generated 896/10000
+  Generated 1024/10000
+  Generated 1152/10000
+  Generated 1280/10000
+  Generated 1408/10000
+  Generated 1536/10000
+  Generated 1664/10000
+  Generated 1792/10000
+  Generated 1920/10000
+  Generated 2048/10000
+  Generated 2176/10000
+  Generated 2304/10000
+  Generated 2432/10000
+  Generated 2560/10000
+  Generated 2688/10000
+  Generated 2816/10000
+  Generated 2944/10000
+  Generated 3072/10000
+  Generated 3200/10000
+  Generated 3328/10000
+  Generated 3456/10000
+  Generated 3584/10000
+  Generated 3712/10000
+  Generated 3840/10000
+  Generated 3968/10000
+  Generated 4096/10000
+  Generated 4224/10000
+  Generated 4352/10000
+  Generated 4480/10000
+  Generated 4608/10000
+  Generated 4736/10000
+  Generated 4864/10000
+  Generated 4992/10000
+  Generated 5120/10000
+  Generated 5248/10000
+  Generated 5376/10000
+  Generated 5504/10000
+  Generated 5632/10000
+  Generated 5760/10000
+  Generated 5888/10000
+  Generated 6016/10000
+  Generated 6144/10000
+  Generated 6272/10000
+  Generated 6400/10000
+  Generated 6528/10000
+  Generated 6656/10000
+  Generated 6784/10000
+  Generated 6912/10000
+  Generated 7040/10000
+  Generated 7168/10000
+  Generated 7296/10000
+  Generated 7424/10000
+  Generated 7552/10000
+  Generated 7680/10000
+  Generated 7808/10000
+  Generated 7936/10000
+  Generated 8064/10000
+  Generated 8192/10000
+  Generated 8320/10000
+  Generated 8448/10000
+  Generated 8576/10000
+  Generated 8704/10000
+  Generated 8832/10000
+  Generated 8960/10000
+  Generated 9088/10000
+  Generated 9216/10000
+  Generated 9344/10000
+  Generated 9472/10000
+  Generated 9600/10000
+  Generated 9728/10000
+  Generated 9856/10000
+  Generated 9984/10000
+  Generated 10000/10000
+
+Loading real CIFAR-10 training images...
+Files already downloaded and verified
+  Loaded 50000 real images
+
+Loading InceptionV3...
+
+Extracting features for generated images...
+  Inception: 1280/10000
+  Inception: 2560/10000
+  Inception: 3840/10000
+  Inception: 5120/10000
+  Inception: 6400/10000
+  Inception: 7680/10000
+  Inception: 8960/10000
+
+Extracting features for real images...
+  Inception: 1280/50000
+  Inception: 2560/50000
+  Inception: 3840/50000
+  Inception: 5120/50000
+  Inception: 6400/50000
+  Inception: 7680/50000
+  Inception: 8960/50000
+  Inception: 10240/50000
+  Inception: 11520/50000
+  Inception: 12800/50000
+  Inception: 14080/50000
+  Inception: 15360/50000
+  Inception: 16640/50000
+  Inception: 17920/50000
+  Inception: 19200/50000
+  Inception: 20480/50000
+  Inception: 21760/50000
+  Inception: 23040/50000
+  Inception: 24320/50000
+  Inception: 25600/50000
+  Inception: 26880/50000
+  Inception: 28160/50000
+  Inception: 29440/50000
+  Inception: 30720/50000
+  Inception: 32000/50000
+  Inception: 33280/50000
+  Inception: 34560/50000
+  Inception: 35840/50000
+  Inception: 37120/50000
+  Inception: 38400/50000
+  Inception: 39680/50000
+  Inception: 40960/50000
+  Inception: 42240/50000
+  Inception: 43520/50000
+  Inception: 44800/50000
+  Inception: 46080/50000
+  Inception: 47360/50000
+  Inception: 48640/50000
+  Inception: 49920/50000
+
+Computing FID...
+Computing IS...
+
+==================================================
+  FID:  4.29       (paper: 3.17)
+  IS:   5.65 ± 0.10  (paper: 9.46 ± 0.11)
+==================================================
+
+Results saved to ./eval_results.txt

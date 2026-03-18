@@ -1,0 +1,110 @@
+Downloading https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz to ./data/cifar-10-python.tar.gz
+Extracting ./data/cifar-10-python.tar.gz to ./data
+Model parameters: 35,746,307
+Training for 50000 steps on cuda
+Step 500/50000 | Loss: 0.0724
+Step 1000/50000 | Loss: 0.0452
+Step 1500/50000 | Loss: 0.0409
+Step 2000/50000 | Loss: 0.0383
+Step 2500/50000 | Loss: 0.0379
+Step 3000/50000 | Loss: 0.0361
+Step 3500/50000 | Loss: 0.0344
+Step 4000/50000 | Loss: 0.0342
+Step 4500/50000 | Loss: 0.0352
+Step 5000/50000 | Loss: 0.0349
+Step 5500/50000 | Loss: 0.0335
+Step 6000/50000 | Loss: 0.0339
+Step 6500/50000 | Loss: 0.0333
+Step 7000/50000 | Loss: 0.0321
+Step 7500/50000 | Loss: 0.0328
+Step 8000/50000 | Loss: 0.0320
+Step 8500/50000 | Loss: 0.0325
+Step 9000/50000 | Loss: 0.0317
+Step 9500/50000 | Loss: 0.0311
+Step 10000/50000 | Loss: 0.0311
+Saved checkpoint: checkpoints_overfit/ckpt_10000.pt
+Step 10500/50000 | Loss: 0.0302
+Step 11000/50000 | Loss: 0.0296
+Step 11500/50000 | Loss: 0.0278
+Step 12000/50000 | Loss: 0.0288
+Step 12500/50000 | Loss: 0.0272
+Step 13000/50000 | Loss: 0.0261
+Step 13500/50000 | Loss: 0.0262
+Step 14000/50000 | Loss: 0.0259
+Step 14500/50000 | Loss: 0.0252
+Step 15000/50000 | Loss: 0.0244
+Step 15500/50000 | Loss: 0.0243
+Step 16000/50000 | Loss: 0.0228
+Step 16500/50000 | Loss: 0.0233
+Step 17000/50000 | Loss: 0.0218
+Step 17500/50000 | Loss: 0.0216
+Step 18000/50000 | Loss: 0.0209
+Step 18500/50000 | Loss: 0.0208
+Step 19000/50000 | Loss: 0.0213
+Step 19500/50000 | Loss: 0.0210
+Step 20000/50000 | Loss: 0.0198
+Saved checkpoint: checkpoints_overfit/ckpt_20000.pt
+Step 20500/50000 | Loss: 0.0201
+Step 21000/50000 | Loss: 0.0189
+Step 21500/50000 | Loss: 0.0196
+Step 22000/50000 | Loss: 0.0200
+Step 22500/50000 | Loss: 0.0185
+Step 23000/50000 | Loss: 0.0181
+Step 23500/50000 | Loss: 0.0182
+Step 24000/50000 | Loss: 0.0183
+Step 24500/50000 | Loss: 0.0176
+Step 25000/50000 | Loss: 0.0187
+Step 25500/50000 | Loss: 0.0172
+Step 26000/50000 | Loss: 0.0172
+Step 26500/50000 | Loss: 0.0168
+Step 27000/50000 | Loss: 0.0169
+Step 27500/50000 | Loss: 0.0165
+Step 28000/50000 | Loss: 0.0159
+Step 28500/50000 | Loss: 0.0172
+Step 29000/50000 | Loss: 0.0169
+Step 29500/50000 | Loss: 0.0162
+Step 30000/50000 | Loss: 0.0156
+Saved checkpoint: checkpoints_overfit/ckpt_30000.pt
+Step 30500/50000 | Loss: 0.0163
+Step 31000/50000 | Loss: 0.0154
+Step 31500/50000 | Loss: 0.0143
+Step 32000/50000 | Loss: 0.0142
+Step 32500/50000 | Loss: 0.0147
+Step 33000/50000 | Loss: 0.0152
+Step 33500/50000 | Loss: 0.0148
+Step 34000/50000 | Loss: 0.0146
+Step 34500/50000 | Loss: 0.0153
+Step 35000/50000 | Loss: 0.0144
+Step 35500/50000 | Loss: 0.0136
+Step 36000/50000 | Loss: 0.0152
+Step 36500/50000 | Loss: 0.0148
+Step 37000/50000 | Loss: 0.0149
+Step 37500/50000 | Loss: 0.0145
+Step 38000/50000 | Loss: 0.0134
+Step 38500/50000 | Loss: 0.0140
+Step 39000/50000 | Loss: 0.0131
+Step 39500/50000 | Loss: 0.0141
+Step 40000/50000 | Loss: 0.0133
+Saved checkpoint: checkpoints_overfit/ckpt_40000.pt
+Step 40500/50000 | Loss: 0.0138
+Step 41000/50000 | Loss: 0.0135
+Step 41500/50000 | Loss: 0.0134
+Step 42000/50000 | Loss: 0.0133
+Step 42500/50000 | Loss: 0.0131
+Step 43000/50000 | Loss: 0.0145
+Step 43500/50000 | Loss: 0.0131
+Step 44000/50000 | Loss: 0.0129
+Step 44500/50000 | Loss: 0.0129
+Step 45000/50000 | Loss: 0.0134
+Step 45500/50000 | Loss: 0.0122
+Step 46000/50000 | Loss: 0.0132
+Step 46500/50000 | Loss: 0.0120
+Step 47000/50000 | Loss: 0.0126
+Step 47500/50000 | Loss: 0.0132
+Step 48000/50000 | Loss: 0.0125
+Step 48500/50000 | Loss: 0.0128
+Step 49000/50000 | Loss: 0.0125
+Step 49500/50000 | Loss: 0.0119
+Step 50000/50000 | Loss: 0.0130
+Saved checkpoint: checkpoints_overfit/ckpt_50000.pt
+Training complete.
