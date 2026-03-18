@@ -256,6 +256,12 @@ def main():
                         help="Image pairs per turbulence level for MSE estimation")
     parser.add_argument("--t_step", type=int, default=50,
                         help="Step size between t values evaluated (e.g. 50 → 0,50,100,...,950)")
+    parser.add_argument("--modes", type=str, nargs="+", default=None,
+                        help="OAM modes to load (e.g. --modes gauss p1). "
+                             "Should match what the model was trained on.")
+    parser.add_argument("--turb_levels", type=int, nargs="+", default=None,
+                        help="Turbulence levels to load (e.g. --turb_levels 1 2 3). "
+                             "Should match what the model was trained on.")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -264,7 +270,8 @@ def main():
 
     diffusion = GaussianDiffusion(T=1000, device=device)
     model = load_model(args.checkpoint, args.image_size, device)
-    dataset = OAMDataset(args.mat_path, image_size=args.image_size)
+    dataset = OAMDataset(args.mat_path, image_size=args.image_size,
+                         modes=args.modes, turb_levels=args.turb_levels)
     print(f"Dataset: {len(dataset)} images | "
           f"Modes: {dataset.modes} | "
           f"Turb categories: {dataset.turb_categories}")

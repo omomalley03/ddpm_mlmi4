@@ -53,7 +53,8 @@ options="--mode train_ddpm_oam \
     --save_every $SAVE_EVERY \
     --log_every $LOG_EVERY \
     --image_size $IMAGE_SIZE \
-    --turb_levels 3 \
+    --modes gauss \
+    --turb_levels 1 2 3 \
     $RESUME"
 
 CMD="$application $options > logs/gauss_turb3.$JOBID 2>&1"

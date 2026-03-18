@@ -64,6 +64,9 @@ def main():
     parser.add_argument("--turb_levels", type=int, nargs="+", default=None,
                         help="Turbulence levels to include (e.g. --turb_levels 1 2 3). "
                              "Default: all levels.")
+    parser.add_argument("--modes", type=str, nargs="+", default=None,
+                        help="OAM modes to include (e.g. --modes gauss p1 p4). "
+                             "Default: uses MODES list in dataset_oam.py.")
     parser.add_argument("--no_tsne", action="store_true",
                         help="Skip t-SNE (slow for large datasets)")
 
@@ -223,6 +226,7 @@ def main():
             num_workers=args.num_workers,
             subset_size=args.subset_size,
             turb_levels=args.turb_levels,
+            modes=args.modes,
         )
 
     # --- OAM modes ---
