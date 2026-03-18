@@ -61,6 +61,9 @@ def main():
     # OAM args
     parser.add_argument("--mat_path", type=str, default=None,
                         help="Path to OAM .mat data file")
+    parser.add_argument("--turb_levels", type=int, nargs="+", default=None,
+                        help="Turbulence levels to include (e.g. --turb_levels 1 2 3). "
+                             "Default: all levels.")
     parser.add_argument("--no_tsne", action="store_true",
                         help="Skip t-SNE (slow for large datasets)")
 
@@ -219,6 +222,7 @@ def main():
             image_size=args.image_size,
             num_workers=args.num_workers,
             subset_size=args.subset_size,
+            turb_levels=args.turb_levels,
         )
 
     # --- OAM modes ---

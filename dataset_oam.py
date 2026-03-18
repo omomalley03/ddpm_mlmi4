@@ -45,7 +45,7 @@ def _load_mat(mat_path, keys=None):
 
 
 # Modes to use (subset of: gauss, p1, p2, p3, p4, n1, n2, n3)
-MODES = ["gauss", "p4"]
+MODES = ["gauss", "p1", "p2", "p3", "p4"]
 
 # Human-readable labels for plotting
 MODE_DISPLAY = {
@@ -70,7 +70,13 @@ class OAMDataset(Dataset):
         normalize: If True, normalize each image to [-1, 1] via per-image max.
     """
 
-    def __init__(self, mat_path, modes=None, image_size=None, normalize=True):
+    def __init__(self, mat_path, modes=None, image_size=None, normalize=True,
+                 turb_levels=None):
+        """
+        Args:
+            turb_levels: List of turbulence label values to include (e.g. [1, 2, 3]).
+                         None = include all levels.
+        """
         if modes is None:
             modes = MODES
 
@@ -93,11 +99,17 @@ class OAMDataset(Dataset):
             # Turbulence labels: flatten to (N,)
             labels = data[l_key].flatten().astype(np.int64)
 
+            # Filter by turbulence level if requested
+            if turb_levels is not None:
+                mask = np.isin(labels, turb_levels)
+                imgs = imgs[mask]
+                labels = labels[mask]
+
             images_list.append(imgs)
             mode_labels_list.append(np.full(len(imgs), mode_idx, dtype=np.int64))
             turb_labels_list.append(labels)
 
-        self.images = np.concatenate(images_list, axis=0)         # (total_N, 1, H, W)
+        self.images = np.concatenate(images_list, axis=0)            # (total_N, 1, H, W)
         self.mode_labels = np.concatenate(mode_labels_list, axis=0)  # (total_N,)
         self.turb_labels = np.concatenate(turb_labels_list, axis=0)  # (total_N,)
         self.modes = modes
@@ -150,9 +162,10 @@ class OAMDataset(Dataset):
 
 
 def get_oam_dataloader(mat_path, batch_size=32, modes=None, image_size=None,
-                       num_workers=0, shuffle=True):
+                       num_workers=0, shuffle=True, turb_levels=None):
     """Create a DataLoader for OAM beam images."""
-    dataset = OAMDataset(mat_path, modes=modes, image_size=image_size)
+    dataset = OAMDataset(mat_path, modes=modes, image_size=image_size,
+                         turb_levels=turb_levels)
     return DataLoader(
         dataset,
         batch_size=batch_size,

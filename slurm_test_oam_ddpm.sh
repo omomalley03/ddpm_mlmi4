@@ -23,6 +23,8 @@
 #SBATCH --mail-type=NONE
 
 #! ── JOB A: overfit test (~1.5 hours) ──────────────────────────────────────
+#! To restrict turbulence levels, add e.g.: --turb_levels 1 2 3
+#! Leave --turb_levels out entirely to use all levels.
 #SBATCH --time=04:00:00
 options="--mode train_ddpm_oam --mat_path croped_2_2_pupil_data.mat --total_steps 50000 --batch_size 32 --save_dir checkpoints_oam_overfit --save_every 10000 --log_every 500 --image_size=128"
 #! ── JOB B: short full run (~6-8 hours) ─────────────────────────────────────
