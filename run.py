@@ -252,6 +252,8 @@ def main():
             num_workers=args.num_workers,
             image_size=args.image_size if args.image_size != 32 else None,
             channel_mults=args.vae_channel_mults,
+            modes=args.modes,
+            turb_levels=args.turb_levels,
         )
 
     elif args.mode == "visualize_oam":

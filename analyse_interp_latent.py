@@ -179,7 +179,17 @@ def main(
     n_pairs=3,
     t_stars="250 500 750",
     device="cuda",
+    modes=None,       # filter dataset to specific modes (must include mode_a and mode_b)
+    turb_levels=None, # filter dataset to specific turb levels
 ):
+    """
+    modes / turb_levels control which images are loaded from the .mat file.
+    They must be consistent with how the VAE and latent DDPM were trained.
+
+    Model A: modes=["gauss"],                    turb_levels=[1,2,3]
+    Model B: modes=["gauss","p1","p2","p3","p4"], turb_levels=[3]
+    Original VAE: modes=["gauss","p4"],           turb_levels=None (all)
+    """
     os.makedirs(output_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
 
@@ -189,7 +199,8 @@ def main(
     diffusion = GaussianDiffusion(T=1000, device=device)
     ldm_model = load_ldm(ldm_checkpoint, device) if ldm_checkpoint else None
 
-    dataset = OAMDataset(mat_path, image_size=VAE_IMAGE_SIZE)
+    dataset = OAMDataset(mat_path, image_size=VAE_IMAGE_SIZE,
+                         modes=modes, turb_levels=turb_levels)
 
     col_labels = [f"α={i/(n_steps-1):.1f}" for i in range(n_steps)]
 
@@ -261,5 +272,11 @@ if __name__ == "__main__":
     parser.add_argument("--t_stars", type=str, default="250 500 750",
                         help="Space-separated t* values for DDPM-style slerp rows")
     parser.add_argument("--device", default="cuda")
+    parser.add_argument("--modes", type=str, nargs="+", default=None,
+                        help="Modes to load from dataset, must include mode_a and mode_b. "
+                             "None = all modes. Model A: gauss. Model B: gauss p1 p2 p3 p4.")
+    parser.add_argument("--turb_levels", type=int, nargs="+", default=None,
+                        help="Turbulence levels to load, e.g. --turb_levels 1 2 3. "
+                             "None = all levels. Model A: 1 2 3. Model B: 3.")
     args = parser.parse_args()
     main(**vars(args))

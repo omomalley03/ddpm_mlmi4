@@ -44,7 +44,20 @@ def ssim_simple(a, b):
     return float(num / den)
 
 
-def main(vae_checkpoint, mat_path, output_dir, n_per_cell=8, device="cuda"):
+def main(vae_checkpoint, mat_path, output_dir, n_per_cell=8, device="cuda",
+         modes=None, turb_levels=None):
+    """
+    modes:       list of mode names to evaluate, e.g. ["gauss"].
+                 None = all modes in dataset_oam.MODES.
+                 Model A: ["gauss"]
+                 Model B: ["gauss","p1","p2","p3","p4"]
+                 Original VAE: ["gauss","p4"]
+
+    turb_levels: list of turbulence labels to evaluate, e.g. [1,2,3].
+                 None = all turbulence levels.
+                 Model A: [1,2,3]
+                 Model B: [3]
+    """
     os.makedirs(output_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
 
@@ -60,7 +73,8 @@ def main(vae_checkpoint, mat_path, output_dir, n_per_cell=8, device="cuda"):
     vae.eval()
     print(f"Loaded VAE from epoch {ckpt['epoch']}")
 
-    dataset = OAMDataset(mat_path, image_size=VAE_IMAGE_SIZE)
+    dataset = OAMDataset(mat_path, image_size=VAE_IMAGE_SIZE,
+                         modes=modes, turb_levels=turb_levels)
     modes = dataset.modes
     # Collect unique turbulence labels
     turb_labels_all = dataset.turb_labels
@@ -182,5 +196,11 @@ if __name__ == "__main__":
     parser.add_argument("--n_per_cell", type=int, default=8,
                         help="Samples per (mode, turb) cell")
     parser.add_argument("--device", default="cuda")
+    parser.add_argument("--modes", type=str, nargs="+", default=None,
+                        help="Modes to evaluate, e.g. --modes gauss. "
+                             "None = all modes. Model A: gauss. Model B: gauss p1 p2 p3 p4.")
+    parser.add_argument("--turb_levels", type=int, nargs="+", default=None,
+                        help="Turbulence levels to evaluate, e.g. --turb_levels 1 2 3. "
+                             "None = all levels. Model A: 1 2 3. Model B: 3.")
     args = parser.parse_args()
     main(**vars(args))

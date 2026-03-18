@@ -3,6 +3,7 @@
 #! Sample from the latent DDPM and compare to pixel-space DDPM.
 #!
 #! Prerequisite: slurm_train_ldm.sh must have completed.
+#! (No modes/turb_levels needed here — sampling uses pure noise, not the dataset.)
 #!
 #! sbatch slurm_sample_ldm.sh
 
@@ -15,11 +16,29 @@
 #SBATCH -p ampere
 #SBATCH --mail-type=NONE
 
-#! ── Edit these ──────────────────────────────────────────────────────────────
-LDM_CHECKPOINT="checkpoints_ldm/ldm_ckpt_200000.pt"
-VAE_CHECKPOINT="checkpoints_vae_128/vae_oam_epoch100.pt"
-PIXEL_CHECKPOINT="checkpoints_ddpm_oam/ckpt_300000.pt"  # set to "" to skip comparison
-OUTPUT_DIR="samples_ldm"
+#! ── Checkpoint config — edit to match your experiment ───────────────────────
+#!
+#! Model A
+LDM_CHECKPOINT="checkpoints_ldm_modelA/ldm_ckpt_200000.pt"
+VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
+OUTPUT_DIR="samples_ldm_modelA"
+#! Pixel DDPM trained on the same data (gauss, turb 1/2/3):
+PIXEL_CHECKPOINT="checkpoints_gauss_turb3/ckpt_300000.pt"
+#!
+#! Model B
+#! LDM_CHECKPOINT="checkpoints_ldm_modelB/ldm_ckpt_200000.pt"
+#! VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
+#! OUTPUT_DIR="samples_ldm_modelB"
+#! PIXEL_CHECKPOINT="checkpoints_ddpm_oam/ckpt_300000.pt"
+#!
+#! Original VAE config
+#! LDM_CHECKPOINT="checkpoints_ldm_orig/ldm_ckpt_200000.pt"
+#! VAE_CHECKPOINT="checkpoints_vae_128_orig/vae_oam_epoch100.pt"
+#! OUTPUT_DIR="samples_ldm_orig"
+#! PIXEL_CHECKPOINT="checkpoints_ddpm_oam/ckpt_300000.pt"
+#!
+#! To skip the pixel-DDPM comparison, set PIXEL_CHECKPOINT=""
+#! ── Fixed settings ───────────────────────────────────────────────────────────
 N_SAMPLES=64
 #! ────────────────────────────────────────────────────────────────────────────
 
@@ -36,7 +55,6 @@ cd $workdir
 mkdir -p logs $OUTPUT_DIR
 JOBID=$SLURM_JOB_ID
 
-# Build optional pixel comparison flag
 PIXEL_FLAG=""
 if [ -n "$PIXEL_CHECKPOINT" ]; then
     PIXEL_FLAG="--pixel_checkpoint $PIXEL_CHECKPOINT"
@@ -52,8 +70,8 @@ CMD="$PYTHON_EXEC -u sample_ldm.py \
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"
-echo "LDM checkpoint: $LDM_CHECKPOINT"
-echo "VAE checkpoint: $VAE_CHECKPOINT"
+echo "LDM: $LDM_CHECKPOINT"
+echo "VAE: $VAE_CHECKPOINT"
 echo -e "\nExecuting command:\n==================\n$CMD\n"
 
 eval $CMD

@@ -39,6 +39,8 @@ def train_vae_oam(
     num_workers=4,
     image_size=None,  # None = keep original 320×320
     channel_mults=None,  # None = use OAM_CHANNEL_MULTS
+    modes=None,       # None = all modes in MODES list; e.g. ["gauss"] or ["gauss","p4"]
+    turb_levels=None, # None = all turbulence levels; e.g. [1,2,3] or [3]
 ):
     os.makedirs(save_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
@@ -75,6 +77,7 @@ def train_vae_oam(
 
     dataloader, dataset = get_oam_dataloader(
         mat_path, batch_size=batch_size, num_workers=num_workers, image_size=image_size,
+        modes=modes, turb_levels=turb_levels,
     )
     print(f"Dataset: {len(dataset)} images | Training on {device}")
 

@@ -82,9 +82,17 @@ def load_vae(checkpoint_path, device):
 
 
 @torch.no_grad()
-def encode_dataset(vae, mat_path, device, batch_size=64, num_workers=4):
-    """Encode all OAM images to latent means (no sampling noise)."""
-    dataset = OAMDataset(mat_path, image_size=VAE_IMAGE_SIZE)
+def encode_dataset(vae, mat_path, device, batch_size=64, num_workers=4,
+                   modes=None, turb_levels=None):
+    """Encode OAM images to latent means (no sampling noise).
+
+    modes:       list of mode names to include, e.g. ["gauss"] or ["gauss","p4"].
+                 None = all modes in dataset_oam.MODES.
+    turb_levels: list of turbulence labels to include, e.g. [1,2,3] or [3].
+                 None = all turbulence levels.
+    """
+    dataset = OAMDataset(mat_path, image_size=VAE_IMAGE_SIZE,
+                         modes=modes, turb_levels=turb_levels)
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=False,
                         num_workers=num_workers, pin_memory=True)
     print(f"Encoding {len(dataset)} images to latents...")
@@ -111,6 +119,8 @@ def train(
     resume=None,
     device="cuda",
     num_workers=4,
+    modes=None,       # e.g. ["gauss"] for Model A; ["gauss","p1","p2","p3","p4"] for Model B
+    turb_levels=None, # e.g. [1,2,3] for Model A; [3] for Model B; None = all levels
 ):
     os.makedirs(save_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
@@ -118,7 +128,8 @@ def train(
     # Load VAE and encode dataset
     vae = load_vae(vae_checkpoint, device)
     latents = encode_dataset(vae, mat_path, device,
-                             batch_size=batch_size, num_workers=num_workers)
+                             batch_size=batch_size, num_workers=num_workers,
+                             modes=modes, turb_levels=turb_levels)
     del vae  # free GPU memory after encoding
 
     latent_dataset = TensorDataset(latents)
@@ -210,5 +221,11 @@ if __name__ == "__main__":
     parser.add_argument("--resume", type=str, default=None)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--num_workers", type=int, default=4)
+    parser.add_argument("--modes", type=str, nargs="+", default=None,
+                        help="Modes to encode, e.g. --modes gauss. "
+                             "None = all modes. Model A: gauss. Model B: gauss p1 p2 p3 p4.")
+    parser.add_argument("--turb_levels", type=int, nargs="+", default=None,
+                        help="Turbulence levels to encode, e.g. --turb_levels 1 2 3. "
+                             "None = all levels. Model A: 1 2 3. Model B: 3.")
     args = parser.parse_args()
     train(**vars(args))
