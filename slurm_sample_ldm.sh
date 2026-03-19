@@ -19,17 +19,17 @@
 #! ── Checkpoint config — edit to match your experiment ───────────────────────
 #!
 #! Model A
-LDM_CHECKPOINT="checkpoints_ldm_modelA/ldm_ckpt_200000.pt"
-VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
-OUTPUT_DIR="samples_ldm_modelA"
+#! LDM_CHECKPOINT="checkpoints_ldm_modelA/ldm_ckpt_50000.pt"
+#! VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
+#! OUTPUT_DIR="samples_ldm_modelA"
 #! Pixel DDPM trained on the same data (gauss, turb 1/2/3):
-PIXEL_CHECKPOINT="checkpoints_gauss_turb3/ckpt_300000.pt"
+#! PIXEL_CHECKPOINT="checkpoints_gauss_turbs_1thru3/ckpt_50000.pt"
 #!
 #! Model B
-#! LDM_CHECKPOINT="checkpoints_ldm_modelB/ldm_ckpt_200000.pt"
-#! VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
-#! OUTPUT_DIR="samples_ldm_modelB"
-#! PIXEL_CHECKPOINT="checkpoints_ddpm_oam/ckpt_300000.pt"
+LDM_CHECKPOINT="checkpoints_ldm_modelB/ldm_ckpt_50000.pt"
+VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
+OUTPUT_DIR="samples_ldm_modelB"
+PIXEL_CHECKPOINT="checkpoints_gauss_turb3/ckpt_50000.pt"
 #!
 #! Original VAE config
 #! LDM_CHECKPOINT="checkpoints_ldm_orig/ldm_ckpt_200000.pt"

@@ -28,33 +28,39 @@
 #! Interpolation here is between gauss images at different turbulence levels
 #! (use --turb_a / --turb_b in the script below instead of mode_a/mode_b).
 #! For mode interpolation, use Model B or Original VAE config instead.
-VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
-LDM_CHECKPOINT="checkpoints_ldm_modelA/ldm_ckpt_200000.pt"
-MODES="gauss"
-TURB_LEVELS="1 2 3"
-MODE_A="gauss"
-MODE_B="gauss"    # same mode; vary turb_level via --turb_level arg below
-TURB_LEVEL=1      # show samples from turb level 1 at both endpoints
-OUTPUT_DIR="analysis_interp_latent_modelA"
-#!
-#! Model B: all OAM modes, turb 3 — interpolate gauss ↔ p4
-#! VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
-#! LDM_CHECKPOINT="checkpoints_ldm_modelB/ldm_ckpt_200000.pt"
-#! MODES="gauss p1 p2 p3 p4"
-#! TURB_LEVELS="3"
+#! VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
+#! LDM_CHECKPOINT="checkpoints_ldm_modelA/ldm_ckpt_50000.pt"
+#! MODES="gauss"
+#! TURB_LEVELS="1 2 3"
 #! MODE_A="gauss"
-#! MODE_B="p4"
-#! TURB_LEVEL=3
-#! OUTPUT_DIR="analysis_interp_latent_modelB"
+#! MODE_B="gauss"    # same mode — interpolating between turbulence levels, not modes
+#! TURB_A=1          # turb level for left endpoint
+#! TURB_B=3          # turb level for right endpoint
+#! TURB_LEVEL=""     # leave empty when using turb_a/turb_b
+#! OUTPUT_DIR="analysis_interp_latent_modelA"
 #!
-#! Original VAE config: gauss + p4, all turb levels
+#! Model B: all OAM modes, turb 3 — interpolate gauss ↔ p4 (MODE interpolation)
+VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
+LDM_CHECKPOINT="checkpoints_ldm_modelB/ldm_ckpt_50000.pt"
+MODES="gauss p1 p2 p3 p4"
+TURB_LEVELS="3"
+MODE_A="gauss"
+MODE_B="p4"
+TURB_A=""               # leave empty for mode interpolation
+TURB_B=""
+TURB_LEVEL=3            # fix turb level for both endpoints
+OUTPUT_DIR="analysis_interp_latent_modelB"
+#!
+#! Original VAE config: gauss + p4, all turb levels (MODE interpolation)
 #! VAE_CHECKPOINT="checkpoints_vae_128_orig/vae_oam_epoch100.pt"
 #! LDM_CHECKPOINT="checkpoints_ldm_orig/ldm_ckpt_200000.pt"
 #! MODES="gauss p4"
 #! TURB_LEVELS=""          # leave empty = all levels
 #! MODE_A="gauss"
 #! MODE_B="p4"
-#! TURB_LEVEL=1            # fix turb level for endpoints; remove flag to use any
+#! TURB_A=""
+#! TURB_B=""
+#! TURB_LEVEL=1            # fix turb level for both endpoints
 #! OUTPUT_DIR="analysis_interp_latent_orig"
 #!
 #! ── Fixed settings ───────────────────────────────────────────────────────────
@@ -82,14 +88,18 @@ if [ -n "$LDM_CHECKPOINT" ]; then
     LDM_FLAG="--ldm_checkpoint $LDM_CHECKPOINT"
 fi
 
-TURB_FLAG=""
+TURB_LEVELS_FLAG=""
 if [ -n "$TURB_LEVELS" ]; then
-    TURB_FLAG="--turb_levels $TURB_LEVELS"
+    TURB_LEVELS_FLAG="--turb_levels $TURB_LEVELS"
 fi
 
-TURB_LEVEL_FLAG=""
-if [ -n "$TURB_LEVEL" ]; then
-    TURB_LEVEL_FLAG="--turb_level $TURB_LEVEL"
+# Turbulence interpolation (Model A): --turb_a and --turb_b specify the two endpoints.
+# Mode interpolation (Model B/Orig): --turb_level fixes turb for both endpoints.
+TURB_ENDPOINT_FLAG=""
+if [ -n "$TURB_A" ] && [ -n "$TURB_B" ]; then
+    TURB_ENDPOINT_FLAG="--turb_a $TURB_A --turb_b $TURB_B"
+elif [ -n "$TURB_LEVEL" ]; then
+    TURB_ENDPOINT_FLAG="--turb_level $TURB_LEVEL"
 fi
 
 CMD="$PYTHON_EXEC -u analyse_interp_latent.py \
@@ -99,8 +109,8 @@ CMD="$PYTHON_EXEC -u analyse_interp_latent.py \
     --mode_a $MODE_A \
     --mode_b $MODE_B \
     --modes $MODES \
-    $TURB_FLAG \
-    $TURB_LEVEL_FLAG \
+    $TURB_LEVELS_FLAG \
+    $TURB_ENDPOINT_FLAG \
     --n_steps $N_STEPS \
     --n_pairs $N_PAIRS \
     --t_stars \"$T_STARS\" \

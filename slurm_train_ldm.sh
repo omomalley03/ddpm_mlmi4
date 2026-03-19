@@ -19,16 +19,16 @@
 #! ── Data config — must match the VAE checkpoint below ───────────────────────
 #!
 #! Model A: Gaussian only, turbulence levels 1/2/3
-VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
-MODES="gauss"
-TURB_LEVELS="1 2 3"
-SAVE_DIR="checkpoints_ldm_modelA"
+#! VAE_CHECKPOINT="checkpoints_vae_128_modelA/vae_oam_epoch100.pt"
+#! MODES="gauss"
+#! TURB_LEVELS="1 2 3"
+#! SAVE_DIR="checkpoints_ldm_modelA"
 #!
 #! Model B: all OAM modes, turbulence level 3 only
-#! VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
-#! MODES="gauss p1 p2 p3 p4"
-#! TURB_LEVELS="3"
-#! SAVE_DIR="checkpoints_ldm_modelB"
+VAE_CHECKPOINT="checkpoints_vae_128_modelB/vae_oam_epoch100.pt"
+MODES="gauss p1 p2 p3 p4"
+TURB_LEVELS="3"
+SAVE_DIR="checkpoints_ldm_modelB"
 #!
 #! Original VAE config: gauss + p4, all turbulence levels
 #! VAE_CHECKPOINT="checkpoints_vae_128_orig/vae_oam_epoch100.pt"
@@ -38,7 +38,7 @@ SAVE_DIR="checkpoints_ldm_modelA"
 #!
 #! ── Fixed settings ───────────────────────────────────────────────────────────
 MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
-TOTAL_STEPS=200000
+TOTAL_STEPS=50000
 BATCH_SIZE=256
 #! ────────────────────────────────────────────────────────────────────────────
 

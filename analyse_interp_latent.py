@@ -174,7 +174,9 @@ def main(
     ldm_checkpoint=None,
     mode_a="gauss",
     mode_b="p4",
-    turb_level=None,
+    turb_level=None,  # same turb level for both endpoints (mode interpolation)
+    turb_a=None,      # turb level for endpoint A (turb interpolation, mode_a == mode_b)
+    turb_b=None,      # turb level for endpoint B (turb interpolation, mode_a == mode_b)
     n_steps=9,
     n_pairs=3,
     t_stars="250 500 750",
@@ -183,12 +185,19 @@ def main(
     turb_levels=None, # filter dataset to specific turb levels
 ):
     """
-    modes / turb_levels control which images are loaded from the .mat file.
-    They must be consistent with how the VAE and latent DDPM were trained.
+    Two interpolation axes:
 
-    Model A: modes=["gauss"],                    turb_levels=[1,2,3]
-    Model B: modes=["gauss","p1","p2","p3","p4"], turb_levels=[3]
-    Original VAE: modes=["gauss","p4"],           turb_levels=None (all)
+    Mode interpolation (default): set mode_a != mode_b, turb_level fixes both endpoints.
+        Model B: mode_a=gauss, mode_b=p4, turb_level=3
+        Original VAE: mode_a=gauss, mode_b=p4, turb_level=1
+
+    Turbulence interpolation: set mode_a == mode_b, turb_a and turb_b for the two endpoints.
+        Model A: mode_a=gauss, mode_b=gauss, turb_a=1, turb_b=3
+
+    modes / turb_levels filter which images are loaded (must match VAE/LDM training data).
+        Model A:        modes=["gauss"],                     turb_levels=[1,2,3]
+        Model B:        modes=["gauss","p1","p2","p3","p4"], turb_levels=[3]
+        Original VAE:   modes=["gauss","p4"],                turb_levels=None (all)
     """
     os.makedirs(output_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
@@ -204,11 +213,17 @@ def main(
 
     col_labels = [f"α={i/(n_steps-1):.1f}" for i in range(n_steps)]
 
+    # Resolve per-endpoint turbulence levels.
+    # Turb interpolation: --turb_a / --turb_b provided (mode_a == mode_b, turb differs).
+    # Mode interpolation: --turb_level used for both endpoints (mode_a != mode_b).
+    turb_for_a = turb_a if turb_a is not None else turb_level
+    turb_for_b = turb_b if turb_b is not None else turb_level
+
     for pair_idx in range(n_pairs):
         seed_a = pair_idx * 2
         seed_b = pair_idx * 2 + 1
-        img_a = get_mode_sample(dataset, mode_a, turb_level, seed=seed_a)
-        img_b = get_mode_sample(dataset, mode_b, turb_level, seed=seed_b)
+        img_a = get_mode_sample(dataset, mode_a, turb_for_a, seed=seed_a)
+        img_b = get_mode_sample(dataset, mode_b, turb_for_b, seed=seed_b)
 
         img_a_t = img_a.unsqueeze(0).to(device)
         img_b_t = img_b.unsqueeze(0).to(device)
@@ -243,15 +258,18 @@ def main(
                 rows.append(ddpm_row)
                 row_labels.append(f"t*={t_star}")
 
-        turb_tag = f"_turb{turb_level}" if turb_level is not None else ""
-        out_path = os.path.join(
-            output_dir,
-            f"latent_interp_{mode_a}_to_{mode_b}{turb_tag}_pair{pair_idx}.png",
-        )
-        save_grid(
-            rows, row_labels, col_labels, out_path,
-            title=f"Latent slerp: {mode_a} → {mode_b}{turb_tag}  (pair {pair_idx})",
-        )
+        if turb_a is not None and turb_b is not None:
+            # Turbulence interpolation
+            tag = f"{mode_a}_turb{turb_a}_to_turb{turb_b}"
+            title = f"Latent slerp: {mode_a} turb={turb_a} → turb={turb_b}  (pair {pair_idx})"
+        else:
+            # Mode interpolation
+            turb_tag = f"_turb{turb_level}" if turb_level is not None else ""
+            tag = f"{mode_a}_to_{mode_b}{turb_tag}"
+            title = f"Latent slerp: {mode_a} → {mode_b}{turb_tag}  (pair {pair_idx})"
+
+        out_path = os.path.join(output_dir, f"latent_interp_{tag}_pair{pair_idx}.png")
+        save_grid(rows, row_labels, col_labels, out_path, title=title)
 
 
 if __name__ == "__main__":
@@ -264,7 +282,13 @@ if __name__ == "__main__":
     parser.add_argument("--mode_a", default="gauss")
     parser.add_argument("--mode_b", default="p4")
     parser.add_argument("--turb_level", type=int, default=None,
-                        help="Fix turbulence level for both endpoints")
+                        help="Fix turbulence level for both endpoints (mode interpolation)")
+    parser.add_argument("--turb_a", type=int, default=None,
+                        help="Turb level for endpoint A (turbulence interpolation). "
+                             "Use with --turb_b and mode_a == mode_b. "
+                             "Model A example: --turb_a 1 --turb_b 3")
+    parser.add_argument("--turb_b", type=int, default=None,
+                        help="Turb level for endpoint B (turbulence interpolation).")
     parser.add_argument("--n_steps", type=int, default=9,
                         help="Number of interpolation steps (columns)")
     parser.add_argument("--n_pairs", type=int, default=3,

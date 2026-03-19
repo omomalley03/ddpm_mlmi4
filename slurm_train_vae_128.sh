@@ -17,14 +17,14 @@
 #! ── Data config — edit to match your experiment ─────────────────────────────
 #!
 #! Model A: Gaussian only, turbulence levels 1/2/3
-MODES="gauss"
-TURB_LEVELS="1 2 3"
-SAVE_DIR="checkpoints_vae_128_modelA"
+#! MODES="gauss"
+#! TURB_LEVELS="1 2 3"
+#! SAVE_DIR="checkpoints_vae_128_modelA_sintr"
 #!
 #! Model B: all OAM modes, turbulence level 3 only
-#! MODES="gauss p1 p2 p3 p4"
-#! TURB_LEVELS="3"
-#! SAVE_DIR="checkpoints_vae_128_modelB"
+MODES="gauss p1 p2 p3 p4"
+TURB_LEVELS="3"
+SAVE_DIR="checkpoints_vae_128_modelB"
 #!
 #! Original VAE config: gauss + p4, all turbulence levels
 #! MODES="gauss p4"

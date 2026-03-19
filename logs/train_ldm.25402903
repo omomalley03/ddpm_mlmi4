@@ -1,0 +1,79 @@
+Loaded VAE from epoch 100
+Loaded 2510 images from 1 modes
+  Modes: ['gauss']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3]
+Encoding 2510 images to latents...
+Latent tensor: torch.Size([2510, 4, 8, 8])  mean=0.025  std=0.739
+Latent DDPM parameters: 3,993,476
+Latent shape: (4, 8, 8)
+Step 1000/200000 | Loss: 0.1303
+Step 2000/200000 | Loss: 0.0839
+Step 3000/200000 | Loss: 0.0744
+Step 4000/200000 | Loss: 0.0671
+Step 5000/200000 | Loss: 0.0611
+Step 6000/200000 | Loss: 0.0568
+Step 7000/200000 | Loss: 0.0533
+Step 8000/200000 | Loss: 0.0507
+Step 9000/200000 | Loss: 0.0483
+Step 10000/200000 | Loss: 0.0465
+Step 11000/200000 | Loss: 0.0450
+Step 12000/200000 | Loss: 0.0438
+Step 13000/200000 | Loss: 0.0427
+Step 14000/200000 | Loss: 0.0420
+Step 15000/200000 | Loss: 0.0413
+Step 16000/200000 | Loss: 0.0402
+Step 17000/200000 | Loss: 0.0398
+Step 18000/200000 | Loss: 0.0394
+Step 19000/200000 | Loss: 0.0387
+Step 20000/200000 | Loss: 0.0382
+Step 21000/200000 | Loss: 0.0376
+Step 22000/200000 | Loss: 0.0374
+Step 23000/200000 | Loss: 0.0366
+Step 24000/200000 | Loss: 0.0362
+Step 25000/200000 | Loss: 0.0361
+Step 26000/200000 | Loss: 0.0359
+Step 27000/200000 | Loss: 0.0354
+Step 28000/200000 | Loss: 0.0352
+Step 29000/200000 | Loss: 0.0351
+Step 30000/200000 | Loss: 0.0346
+Step 31000/200000 | Loss: 0.0348
+Step 32000/200000 | Loss: 0.0343
+Step 33000/200000 | Loss: 0.0342
+Step 34000/200000 | Loss: 0.0338
+Step 35000/200000 | Loss: 0.0335
+Step 36000/200000 | Loss: 0.0335
+Step 37000/200000 | Loss: 0.0333
+Step 38000/200000 | Loss: 0.0331
+Step 39000/200000 | Loss: 0.0326
+Step 40000/200000 | Loss: 0.0326
+Step 41000/200000 | Loss: 0.0325
+Step 42000/200000 | Loss: 0.0324
+Step 43000/200000 | Loss: 0.0325
+Step 44000/200000 | Loss: 0.0319
+Step 45000/200000 | Loss: 0.0318
+Step 46000/200000 | Loss: 0.0319
+Step 47000/200000 | Loss: 0.0315
+Step 48000/200000 | Loss: 0.0316
+Step 49000/200000 | Loss: 0.0314
+Step 50000/200000 | Loss: 0.0314
+Saved: checkpoints_ldm_modelA/ldm_ckpt_50000.pt
+Step 51000/200000 | Loss: 0.0312
+Step 52000/200000 | Loss: 0.0313
+Step 53000/200000 | Loss: 0.0310
+Step 54000/200000 | Loss: 0.0310
+Step 55000/200000 | Loss: 0.0307
+Step 56000/200000 | Loss: 0.0306
+Step 57000/200000 | Loss: 0.0306
+Step 58000/200000 | Loss: 0.0308
+Step 59000/200000 | Loss: 0.0305
+Step 60000/200000 | Loss: 0.0303
+Step 61000/200000 | Loss: 0.0298
+Step 62000/200000 | Loss: 0.0299
+Step 63000/200000 | Loss: 0.0297
+Step 64000/200000 | Loss: 0.0302
+Step 65000/200000 | Loss: 0.0295
+Step 66000/200000 | Loss: 0.0295
+Step 67000/200000 | Loss: 0.0298
+Step 68000/200000 | Loss: 0.0297
+Step 69000/200000 | Loss: 0.0295

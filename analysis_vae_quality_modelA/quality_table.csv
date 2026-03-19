@@ -1,0 +1,4 @@
+mode,turb_level,mse,ssim
+gauss,1,0.000320,0.9970
+gauss,2,0.000540,0.9963
+gauss,3,0.000385,0.9961

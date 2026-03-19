@@ -81,7 +81,7 @@ def sample_progression(
     n_frames=10,
     output_dir="samples",
     device="cuda",
-    image_size=32,
+    image_size=128,
 ):
     """Visualise the denoising process as a grid.
 

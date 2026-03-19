@@ -172,7 +172,7 @@ class GaussianDiffusion:
         # Always include t=0 (final image) and t=T-1 (pure noise)
         save_at = set(
             round(t) for t in
-            torch.linspace((self.T)  - 1, 0, n_frames).tolist()
+            torch.linspace((self.T/2)  - 1, 0, n_frames).tolist()
         )
 
         x = torch.randn(shape, device=self.device)

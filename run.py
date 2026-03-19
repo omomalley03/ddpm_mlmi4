@@ -25,7 +25,8 @@ def main():
     parser.add_argument("--mode", type=str, default="train",
                         choices=["train", "sample", "denoise", "eval",
                                  "train_vae", "precompute", "train_latent", "sample_latent",
-                                 "train_vae_oam", "visualize_oam", "train_ddpm_oam", "sample_oam", "interpolate"])
+                                 "train_vae_oam", "visualize_oam", "train_ddpm_oam", "sample_oam",
+                                 "progression_oam", "interpolate"])
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=2e-4)
@@ -109,6 +110,18 @@ def main():
         sample(
             checkpoint_path=args.resume,
             n_samples=args.n_samples,
+            output_dir=args.output_dir,
+            device=args.device,
+            image_size=args.image_size,
+        )
+    elif args.mode == "progression_oam":
+        if args.resume is None:
+            parser.error("--resume is required for progression_oam mode")
+        from sample_oam import sample_progression
+        sample_progression(
+            checkpoint_path=args.resume,
+            n_samples=args.n_samples,
+            n_frames=args.n_frames,
             output_dir=args.output_dir,
             device=args.device,
             image_size=args.image_size,

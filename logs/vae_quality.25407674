@@ -1,0 +1,12 @@
+Loaded VAE from epoch 100
+Loaded 2510 images from 1 modes
+  Modes: ['gauss']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3]
+Modes: ['gauss']  |  Turb levels: [1, 2, 3]
+  mode=gauss   turb=1  MSE=0.00032  SSIM=0.9970
+  mode=gauss   turb=2  MSE=0.00054  SSIM=0.9963
+  mode=gauss   turb=3  MSE=0.00039  SSIM=0.9961
+Saved: analysis_vae_quality_modelA/reconstruction_grid.png
+Saved: analysis_vae_quality_modelA/quality_table.csv
+Saved: analysis_vae_quality_modelA/quality_barchart.png
