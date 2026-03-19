@@ -23,9 +23,9 @@
 #SBATCH --mail-type=NONE
 
 #! ── Edit these ──────────────────────────────────────────────────────────────
-CHECKPOINT="checkpoints_ddpm_oam/ckpt_300000.pt"
+CHECKPOINT="checkpoints_gauss_turb3/ckpt_50000.pt"
 MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
-OUTPUT_DIR="analysis_interpolation"
+OUTPUT_DIR="analysis_interpolation_oam_turb3"
 IMAGE_SIZE=128
 N_STEPS=9        # number of α interpolation steps (including endpoints 0 and 1)
 N_PAIRS=3        # number of (source_gauss, source_p4) pairs to visualise

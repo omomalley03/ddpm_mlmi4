@@ -1,27 +1,23 @@
 #!/bin/bash
 #!
-#! Sample images from a DDPM checkpoint on GPU.
-#! Edit CHECKPOINT, MODE, and N_SAMPLES below, then: sbatch slurm_sample.sh
+#! Sample from Model A: Gaussian mode, turbulence levels 1,2,3.
 #!
-#! MODE options:
-#!   sample  — generate N_SAMPLES independent images
-#!   denoise — generate a denoising progression grid (N_SAMPLES rows x N_FRAMES columns)
+#! sbatch slurm_sample_modelA.sh
 
-#SBATCH -J ddpm_sample
+#SBATCH -J sample_modelA
 #SBATCH -A MLMI-omo26-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=00:15:00
+#SBATCH --time=00:20:00
 #SBATCH -p ampere
 #SBATCH --mail-type=NONE
 
 #! ── Edit these ──────────────────────────────────────────────────────────────
 CHECKPOINT="checkpoints_gauss_turbs_1thru3/ckpt_50000.pt"
-MODE="sample_oam"       # "sample" or "denoise"
-N_SAMPLES=9
-N_FRAMES=10          # columns in the progression grid (denoise mode only)
-OUTPUT_DIR="samples_gauss_turb1thru3"
+OUTPUT_DIR="samples_fixed_gaussian"
+N_SAMPLES=16
+IMAGE_SIZE=128
 #! ────────────────────────────────────────────────────────────────────────────
 
 . /etc/profile.d/modules.sh
@@ -37,7 +33,13 @@ cd $workdir
 mkdir -p logs $OUTPUT_DIR
 JOBID=$SLURM_JOB_ID
 
-CMD="$PYTHON_EXEC -u run.py --mode $MODE --resume $CHECKPOINT --n_samples $N_SAMPLES --n_frames $N_FRAMES --output_dir $OUTPUT_DIR --image_size 128 --device cuda > logs/sample.$JOBID"
+CMD="$PYTHON_EXEC -u run.py \
+    --mode sample_oam \
+    --resume $CHECKPOINT \
+    --n_samples $N_SAMPLES \
+    --output_dir $OUTPUT_DIR \
+    --image_size $IMAGE_SIZE \
+    --device cuda > logs/sample_modelA.$JOBID 2>&1"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"

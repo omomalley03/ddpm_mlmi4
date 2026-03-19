@@ -191,106 +191,6 @@ def interpolation_grid(
             print(f"Saved: {path}")
 
 
-@torch.no_grad()
-def interpolation_grid_turb(
-    model,
-    diffusion,
-    dataset,
-    device,
-    output_dir,
-    t_stars=(250, 500, 750, 999),
-    n_steps=9,
-    mode_idx=0,      # fixed mode for both endpoints
-    turb_a=None,     # turbulence label of the "clean" endpoint
-    turb_b=None,     # turbulence label of the "turbulent" endpoint
-    n_source_pairs=3,
-):
-    """Ho et al.-style slerp grid, interpolating between turbulence levels.
-
-    Mode is fixed; the two endpoints differ only in turbulence strength.
-    E.g. Gaussian at turb=1 (left) → Gaussian at turb=3 (right).
-
-    Rows: noise level t*  |  Columns: slerp α = 0 → 1
-    Header row: the two source images (turb_a on left, turb_b on right).
-    """
-    os.makedirs(output_dir, exist_ok=True)
-
-    if turb_a not in dataset.turb_categories:
-        raise ValueError(f"turb_a={turb_a} not in dataset. Available: {dataset.turb_categories}")
-    if turb_b not in dataset.turb_categories:
-        raise ValueError(f"turb_b={turb_b} not in dataset. Available: {dataset.turb_categories}")
-
-    idx_a = np.where(
-        (dataset.mode_labels == mode_idx) & (dataset.turb_labels == turb_a)
-    )[0]
-    idx_b = np.where(
-        (dataset.mode_labels == mode_idx) & (dataset.turb_labels == turb_b)
-    )[0]
-
-    if len(idx_a) == 0 or len(idx_b) == 0:
-        raise ValueError(
-            f"No images found for mode={mode_idx} at turb_a={turb_a} or turb_b={turb_b}."
-        )
-
-    n_pairs = min(n_source_pairs, len(idx_a), len(idx_b))
-    rng = np.random.RandomState(0)
-    sel_a = rng.choice(idx_a, n_pairs, replace=False)
-    sel_b = rng.choice(idx_b, n_pairs, replace=False)
-    alphas = np.linspace(0.0, 1.0, n_steps)
-    mode_name = dataset.mode_display_name(mode_idx)
-
-    for pair_idx, (ia, ib) in enumerate(zip(sel_a, sel_b)):
-        x0_a = dataset[int(ia)][0].unsqueeze(0).to(device)
-        x0_b = dataset[int(ib)][0].unsqueeze(0).to(device)
-
-        n_rows = len(t_stars) + 1
-        n_cols = n_steps
-        fig, axes = plt.subplots(n_rows, n_cols,
-                                 figsize=(n_cols * 1.9, n_rows * 2.0))
-
-        # Header row: source images
-        for col in range(n_cols):
-            axes[0, col].axis("off")
-        _show(axes[0, 0], x0_a.squeeze().cpu().numpy(),
-              f"{mode_name}\nturb={turb_a}")
-        _show(axes[0, -1], x0_b.squeeze().cpu().numpy(),
-              f"{mode_name}\nturb={turb_b}")
-
-        # Interpolation rows
-        for row, t_star in enumerate(t_stars):
-            t_int = min(int(t_star), diffusion.T - 1)
-            eps = torch.randn_like(x0_a)   # same noise for both endpoints
-
-            t_tensor = torch.full((1,), t_int, dtype=torch.long, device=device)
-            x_t_a = diffusion.q_sample(x0_a, t_tensor, noise=eps)
-            x_t_b = diffusion.q_sample(x0_b, t_tensor, noise=eps)
-
-            for col, alpha in enumerate(alphas):
-                z_interp = diffusion.slerp(x_t_a, x_t_b, alpha)
-                x_rec = diffusion.p_sample_loop_from_t(model, z_interp, t_int)
-                _show(axes[row + 1, col], x_rec.squeeze().cpu().numpy(),
-                      f"α={alpha:.2f}" if row == len(t_stars) - 1 else "")
-
-            axes[row + 1, 0].set_ylabel(f"t*={t_star}", fontsize=8)
-
-        axes[0, 0].set_ylabel("Source images", fontsize=8)
-        for col, alpha in enumerate(alphas):
-            axes[1, col].set_title(f"α={alpha:.2f}", fontsize=7)
-
-        plt.suptitle(
-            f"OAM Turbulence Interpolation (Ho et al. style) — {mode_name}, pair {pair_idx+1}\n"
-            f"turb={turb_a} → turb={turb_b}  |  Rows: noise level t*  |  Columns: slerp α",
-            fontsize=9,
-        )
-        plt.tight_layout()
-
-        fname = f"interpolation_{dataset.modes[mode_idx]}_turb{turb_a}_to_turb{turb_b}_pair{pair_idx+1}.png"
-        path = os.path.join(output_dir, fname)
-        plt.savefig(path, dpi=130, bbox_inches="tight")
-        plt.close()
-        print(f"Saved: {path}")
-
-
 def _show(ax, img_np, title=""):
     img_np = ((img_np + 1) / 2).clip(0, 1)
     ax.imshow(img_np, cmap="hot")
@@ -324,16 +224,6 @@ def main():
              "-1 = all levels (one grid per level); "
              "0,1,2,... = specific level"
     )
-    parser.add_argument("--mode_a", type=int, default=0,
-                        help="Dataset index of the first (left) mode. Default: 0 (gauss).")
-    parser.add_argument("--mode_b", type=int, default=1,
-                        help="Dataset index of the second (right) mode. Default: 1.")
-    parser.add_argument("--turb_a", type=int, default=None,
-                        help="Turbulence interpolation: label of the low-turb endpoint. "
-                             "When set alongside --turb_b, switches to turbulence interpolation "
-                             "(fixed mode=--mode_a, varying turb_a→turb_b).")
-    parser.add_argument("--turb_b", type=int, default=None,
-                        help="Turbulence interpolation: label of the high-turb endpoint.")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -344,47 +234,29 @@ def main():
     model = load_model(args.checkpoint, args.image_size, device)
     dataset = OAMDataset(args.mat_path, image_size=args.image_size)
 
+    if len(dataset.modes) < 2:
+        raise ValueError(
+            "Need at least 2 OAM modes for interpolation. "
+            "Check MODES in dataset_oam.py — should include 'gauss' and at least one OAM mode."
+        )
+
     print(f"Dataset: {len(dataset)} images | Modes: {dataset.modes}")
     print(f"t* values: {args.t_stars} | α steps: {args.n_steps} | pairs: {args.n_pairs}")
+    print("\n--- Generating interpolation grids ---")
 
-    turb_interp_mode = args.turb_a is not None and args.turb_b is not None
-
-    if turb_interp_mode:
-        print(f"\n--- Turbulence interpolation: mode={args.mode_a} "
-              f"turb {args.turb_a} → {args.turb_b} ---")
-        interpolation_grid_turb(
-            model=model,
-            diffusion=diffusion,
-            dataset=dataset,
-            device=device,
-            output_dir=args.output_dir,
-            t_stars=args.t_stars,
-            n_steps=args.n_steps,
-            mode_idx=args.mode_a,
-            turb_a=args.turb_a,
-            turb_b=args.turb_b,
-            n_source_pairs=args.n_pairs,
-        )
-    else:
-        if len(dataset.modes) < 2:
-            raise ValueError(
-                "Need at least 2 OAM modes for mode interpolation. "
-                "Check MODES in dataset_oam.py — should include 'gauss' and at least one OAM mode."
-            )
-        print("\n--- Mode interpolation ---")
-        interpolation_grid(
-            model=model,
-            diffusion=diffusion,
-            dataset=dataset,
-            device=device,
-            output_dir=args.output_dir,
-            t_stars=args.t_stars,
-            n_steps=args.n_steps,
-            mode_a=args.mode_a,
-            mode_b=args.mode_b,
-            n_source_pairs=args.n_pairs,
-            turb_level=args.turb_level,
-        )
+    interpolation_grid(
+        model=model,
+        diffusion=diffusion,
+        dataset=dataset,
+        device=device,
+        output_dir=args.output_dir,
+        t_stars=args.t_stars,
+        n_steps=args.n_steps,
+        mode_a=0,
+        mode_b=1,
+        n_source_pairs=args.n_pairs,
+        turb_level=args.turb_level,
+    )
 
     print(f"\nDone. Outputs in: {args.output_dir}/")
 

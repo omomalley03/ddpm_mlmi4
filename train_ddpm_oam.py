@@ -61,6 +61,7 @@ def train(
     num_workers=4,
     subset_size=None,
     turb_levels=None,
+    modes=None,
 ):
     """Main training function.
 
@@ -113,7 +114,7 @@ def train(
     # Data
     dataloader, dataset = get_oam_dataloader(
         mat_path, batch_size=batch_size, num_workers=num_workers, image_size=image_size,
-        turb_levels=turb_levels,
+        turb_levels=turb_levels, modes=modes,
     )
 
     print(f"Dataset: {len(dataset)} images | Training on {device}")
