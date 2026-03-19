@@ -2,10 +2,12 @@
 VAE training on OAM laser beam images.
 
 Architecture: 320×320×1 → (5 downsampling stages) → 10×10×4 latent
+             or 128×128×1 → (4 downsampling stages) →  8×8×4 latent
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4)
 
 Usage:
     python run.py --mode train_vae_oam --mat_path /path/to/data.mat
+    python run.py --mode train_vae_oam --mat_path /path/to/data.mat --image_size 128 --vae_channel_mults 1 2 4 4
 """
 
 import os
@@ -36,21 +38,32 @@ def train_vae_oam(
     device="cuda",
     num_workers=4,
     image_size=None,  # None = keep original 320×320
+    channel_mults=None,  # None = use OAM_CHANNEL_MULTS
+    modes=None,       # None = all modes in MODES list; e.g. ["gauss"] or ["gauss","p4"]
+    turb_levels=None, # None = all turbulence levels; e.g. [1,2,3] or [3]
 ):
     os.makedirs(save_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
 
-    # Model: grayscale (1 channel), 4 downsampling stages
+    mults = tuple(channel_mults) if channel_mults is not None else OAM_CHANNEL_MULTS
+    n_stages = len(mults)
+    if image_size is not None:
+        latent_size = image_size // (2 ** n_stages)
+    else:
+        latent_size = 320 // (2 ** n_stages)
+
+    # Model: grayscale (1 channel)
     vae = VAE(
         in_channels=1,
         base_channels=OAM_BASE_CHANNELS,
-        channel_mults=OAM_CHANNEL_MULTS,
+        channel_mults=mults,
         latent_dim=OAM_LATENT_DIM,
     ).to(device)
 
     param_count = sum(p.numel() for p in vae.parameters())
     print(f"VAE parameters: {param_count:,}")
-    print(f"Latent shape per image: ({OAM_LATENT_DIM}, 10, 10) = {OAM_LATENT_DIM*10*10} dims")
+    print(f"Latent shape per image: ({OAM_LATENT_DIM}, {latent_size}, {latent_size}) = "
+          f"{OAM_LATENT_DIM * latent_size * latent_size} dims")
 
     optimizer = torch.optim.Adam(vae.parameters(), lr=lr)
 
@@ -64,6 +77,7 @@ def train_vae_oam(
 
     dataloader, dataset = get_oam_dataloader(
         mat_path, batch_size=batch_size, num_workers=num_workers, image_size=image_size,
+        modes=modes, turb_levels=turb_levels,
     )
     print(f"Dataset: {len(dataset)} images | Training on {device}")
 

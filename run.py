@@ -69,6 +69,9 @@ def main():
                              "Default: uses MODES list in dataset_oam.py.")
     parser.add_argument("--no_tsne", action="store_true",
                         help="Skip t-SNE (slow for large datasets)")
+    parser.add_argument("--vae_channel_mults", type=int, nargs="+", default=None,
+                        help="VAE channel multipliers per downsampling stage. "
+                             "Default: (1,2,4,4,4) for 320px. Use '1 2 4 4' for 128px.")
 
     args = parser.parse_args()
 
@@ -247,6 +250,10 @@ def main():
             resume=args.resume,
             device=args.device,
             num_workers=args.num_workers,
+            image_size=args.image_size if args.image_size != 32 else None,
+            channel_mults=args.vae_channel_mults,
+            modes=args.modes,
+            turb_levels=args.turb_levels,
         )
 
     elif args.mode == "visualize_oam":

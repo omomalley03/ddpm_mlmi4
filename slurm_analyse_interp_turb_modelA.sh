@@ -25,9 +25,9 @@
 #SBATCH --mail-type=NONE
 
 #! ── Edit these ──────────────────────────────────────────────────────────────
-CHECKPOINT="checkpoints_gauss_turbs_1thru3/ckpt_50000.pt"
+CHECKPOINT="checkpoints_gauss_turb3/ckpt_300000.pt"
 MAT_PATH="/home/omo26/rds/hpc-work/MLMI4/DDPM/croped_2_2_pupil_data.mat"
-OUTPUT_DIR="analysis_interp_between_turbs"
+OUTPUT_DIR="analysis_interp_turb_modelA"
 IMAGE_SIZE=128
 N_STEPS=9
 N_PAIRS=3
