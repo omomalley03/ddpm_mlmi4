@@ -9,8 +9,25 @@ import os
 import torch
 from torchvision.utils import save_image
 
+try:
+    import wandb
+except ImportError:
+    wandb = None
+
 from vae import VAE
 from dataset_hires import get_hires_dataloader
+
+
+def _extract_images(batch):
+    """Extract image tensor from a DataLoader batch.
+
+    Supports datasets returning:
+    - tensor images directly
+    - tuples/lists like (images, labels)
+    """
+    if isinstance(batch, (tuple, list)):
+        return batch[0]
+    return batch
 
 
 def train_vae(
@@ -27,6 +44,9 @@ def train_vae(
     device="cuda",
     data_dir="./data",
     num_workers=4,
+    use_wandb=False,
+    wandb_project="ddpm_mlmi4",
+    wandb_run_name=None,
 ):
     """Train the VAE.
 
@@ -44,15 +64,39 @@ def train_vae(
         device: Device string.
         data_dir: Data directory.
         num_workers: DataLoader workers.
+        use_wandb: Whether to log to Weights & Biases.
+        wandb_project: W&B project name.
+        wandb_run_name: W&B run name (auto-generated if None).
     """
+    print("Beginning VAE training...")
     os.makedirs(save_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
+    print("Loading wandb:", use_wandb)
+    if use_wandb:
+        if wandb is None:
+            raise ImportError("wandb is not installed. Install it with `pip install wandb` or disable --wandb.")
+        wandb.init(
+            project=wandb_project,
+            name=wandb_run_name,
+            config=dict(
+                dataset=dataset,
+                image_size=image_size,
+                batch_size=batch_size,
+                lr=lr,
+                total_epochs=total_epochs,
+                kl_weight=kl_weight,
+                device=str(device),
+            ),
+            tags=["vae"],
+        )
 
     # Model
     vae = VAE(in_channels=3, base_channels=64, latent_dim=4).to(device)
 
     param_count = sum(p.numel() for p in vae.parameters())
     print(f"VAE parameters: {param_count:,}")
+    if use_wandb:
+        wandb.summary["param_count"] = param_count
 
     # Optimizer
     optimizer = torch.optim.Adam(vae.parameters(), lr=lr)
@@ -66,6 +110,8 @@ def train_vae(
         start_epoch = checkpoint["epoch"]
         print(f"Resumed from epoch {start_epoch}")
 
+    print(f"Training VAE for {total_epochs} epochs with KL weight {kl_weight}")
+    print(f'Loading dataloader...')
     # Data
     dataloader = get_hires_dataloader(
         dataset=dataset, image_size=image_size, batch_size=batch_size,
@@ -82,7 +128,8 @@ def train_vae(
         epoch_kl = 0.0
         epoch_steps = 0
 
-        for batch_idx, x in enumerate(dataloader):
+        for batch_idx, batch in enumerate(dataloader):
+            x = _extract_images(batch)
             x = x.to(device)
 
             x_recon, mu, logvar = vae(x)
@@ -103,12 +150,27 @@ def train_vae(
                 print(f"Epoch {epoch+1}/{total_epochs} | Step {global_step} | "
                       f"Recon: {recon.item():.4f} | KL: {kl.item():.2f} | "
                       f"Loss: {loss.item():.4f}")
+                if use_wandb:
+                    wandb.log({
+                        "train/loss": loss.item(),
+                        "train/recon_loss": recon.item(),
+                        "train/kl_loss": kl.item(),
+                        "train/kl_weighted": (kl_weight * kl).item(),
+                        "epoch": epoch + 1,
+                    }, step=global_step)
 
         # Epoch summary
         avg_recon = epoch_recon / epoch_steps
         avg_kl = epoch_kl / epoch_steps
         print(f"Epoch {epoch+1}/{total_epochs} complete | "
               f"Avg Recon: {avg_recon:.4f} | Avg KL: {avg_kl:.2f}")
+        if use_wandb:
+            wandb.log({
+                "epoch/avg_recon_loss": avg_recon,
+                "epoch/avg_kl_loss": avg_kl,
+                "epoch/avg_loss": avg_recon + kl_weight * avg_kl,
+                "epoch": epoch + 1,
+            }, step=global_step)
 
         # Save reconstruction samples at end of each epoch
         if (epoch + 1) % save_every == 0 or (epoch + 1) == total_epochs:
@@ -135,5 +197,13 @@ def train_vae(
                 recon_path = os.path.join(save_dir, f"recon_epoch{epoch+1}.png")
                 save_image(comparison, recon_path, nrow=8)
                 print(f"Saved reconstruction samples: {recon_path}")
+                if use_wandb:
+                    wandb.log({
+                        "reconstructions": wandb.Image(recon_path,
+                                                       caption=f"Epoch {epoch+1}: top=real, bottom=recon"),
+                        "epoch": epoch + 1,
+                    }, step=global_step)
 
     print("VAE training complete.")
+    if use_wandb:
+        wandb.finish()

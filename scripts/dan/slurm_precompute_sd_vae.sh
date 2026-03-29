@@ -5,10 +5,11 @@
 #! Run after slurm_vae.sh completes. Encodes the entire CelebA-HQ dataset
 #! with the trained VAE encoder and saves latents to disk.
 #!
-#! Edit VAE_CHECKPOINT below, then: sbatch slurm_precompute.sh
+#! Stable Diffusion VAE mode does not need a local VAE checkpoint.
+#! Submit with: sbatch slurm_precompute_sd_vae.sh
 
 #SBATCH -J precompute_latents
-#SBATCH -A MLMI-omo26-SL2-GPU
+#SBATCH -A MLMI-dpc49-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
@@ -19,10 +20,9 @@
 #! ######################################################################################
 #! Set options here:
 
-VAE_CHECKPOINT="checkpoints_vae/vae_epoch50.pt"
 LATENT_PATH="data/celeba_latents.pt"
 
-options="--mode precompute --vae_checkpoint $VAE_CHECKPOINT --latent_path $LATENT_PATH"
+options="--mode precompute --latent_path $LATENT_PATH --use_stable_diffusion_vae"
 
 #! ######################################################################################
 
@@ -34,8 +34,8 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 module purge
 module load rhel8/default-amp
 
-PYTHON_EXEC="$HOME/ddpm_venv/bin/python"
-application="$PYTHON_EXEC -u run.py"
+PYTHON_EXEC="/rds/user/dpc49/hpc-work/MLMI4/ddpm_mlmi4/venv/bin/python"
+application="$PYTHON_EXEC -u /rds/user/dpc49/hpc-work/MLMI4/ddpm_mlmi4/run.py"
 
 workdir="$SLURM_SUBMIT_DIR"
 export OMP_NUM_THREADS=1

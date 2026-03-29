@@ -8,6 +8,8 @@ checkpoints*/
 # Generated samples
 samples/
 
+data/     
+
 # SLURM logs and node files
 logs/
 machine.file.*
@@ -23,3 +25,14 @@ __pycache__/
 
 # Jupyter
 .ipynb_checkpoints/
+
+
+
+venv/
+slurm-*.out
+machine.file.*
+wandb/
+
+checkpoints*/
+data/
+logs/

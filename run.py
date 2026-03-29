@@ -13,6 +13,22 @@ Latent Diffusion:
 """
 
 import argparse
+import os
+
+
+def build_wandb_kwargs(args):
+    """Construct common W&B kwargs for supported modes."""
+    run_name = args.wandb_run_name
+    if args.wandb and run_name is None:
+        slurm_job_id = os.environ.get("SLURM_JOB_ID")
+        if slurm_job_id:
+            run_name = f"{args.mode}-{slurm_job_id}"
+
+    return {
+        "use_wandb": args.wandb,
+        "wandb_project": args.wandb_project,
+        "wandb_run_name": run_name,
+    }
 
 
 def main():
@@ -52,8 +68,30 @@ def main():
                         help="Total epochs for VAE training")
     parser.add_argument("--kl_weight", type=float, default=1e-4,
                         help="KL divergence weight for VAE training")
+    parser.add_argument("--use_stable_diffusion_vae", action="store_true", default=False,
+                        help="Use Stable Diffusion's VAE instead of the custom one")
+
+    # DDPM Section 4.2 ablations (latent training)
+    parser.add_argument("--prediction_target", type=str, default="epsilon",
+                        choices=["epsilon", "mu"],
+                        help="What the diffusion model predicts")
+    parser.add_argument("--objective_type", type=str, default="l_simple",
+                        choices=["l_simple", "mse", "l_vlb"],
+                        help="Training objective for diffusion")
+    parser.add_argument("--variance_mode", type=str, default="fixed",
+                        choices=["fixed", "learned"],
+                        help="Reverse-process variance parameterization")
+
+    # W&B logging
+    parser.add_argument("--wandb", action="store_true", default=False,
+                        help="Enable Weights & Biases logging")
+    parser.add_argument("--wandb_project", type=str, default="ddpm_mlmi4",
+                        help="W&B project name")
+    parser.add_argument("--wandb_run_name", type=str, default=None,
+                        help="W&B run name")
 
     args = parser.parse_args()
+    wandb_kwargs = build_wandb_kwargs(args)
 
     if args.mode == "train":
         from train import train
@@ -70,6 +108,7 @@ def main():
             image_size=args.image_size,
             num_workers=args.num_workers,
             subset_size=args.subset_size,
+            **wandb_kwargs,
         )
     elif args.mode == "sample":
         if args.resume is None:
@@ -124,10 +163,11 @@ def main():
             resume=args.resume,
             device=args.device,
             num_workers=args.num_workers,
+            **wandb_kwargs,
         )
 
     elif args.mode == "precompute":
-        if args.vae_checkpoint is None:
+        if args.vae_checkpoint is None and not args.use_stable_diffusion_vae:
             parser.error("--vae_checkpoint is required for precompute mode")
         from precompute_latents import precompute_latents
         precompute_latents(
@@ -138,6 +178,8 @@ def main():
             output_path=args.latent_path,
             device=args.device,
             num_workers=args.num_workers,
+            use_stable_diffusion_vae=args.use_stable_diffusion_vae,
+            **wandb_kwargs,
         )
 
     elif args.mode == "train_latent":
@@ -153,12 +195,17 @@ def main():
             resume=args.resume,
             device=args.device,
             num_workers=args.num_workers,
+            stable_diffusion_vae=args.use_stable_diffusion_vae,
+            prediction_target=args.prediction_target,
+            objective_type=args.objective_type,
+            variance_mode=args.variance_mode,
+            **wandb_kwargs,
         )
 
     elif args.mode == "sample_latent":
         if args.resume is None:
             parser.error("--resume is required for sample_latent mode")
-        if args.vae_checkpoint is None:
+        if args.vae_checkpoint is None and not args.use_stable_diffusion_vae:
             parser.error("--vae_checkpoint is required for sample_latent mode")
         from sample_latent import sample_latent
         sample_latent(
@@ -167,6 +214,7 @@ def main():
             n_samples=args.n_samples,
             output_dir=args.output_dir if args.output_dir != "samples" else "samples_latent",
             device=args.device,
+            use_stable_diffusion_vae=args.use_stable_diffusion_vae,
         )
 
 

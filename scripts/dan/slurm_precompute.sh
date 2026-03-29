@@ -1,25 +1,28 @@
 #!/bin/bash
 #!
-#! SLURM job script for VAE training on CelebA-HQ 256×256 (Wilkes3 A100)
+#! SLURM job script for precomputing CelebA-HQ latents (~30 min on A100)
 #!
-#! Run after setup_env.sh. Trains the encoder/decoder for latent diffusion.
-#! After completion, run slurm_precompute.sh then slurm_latent.sh.
+#! Run after slurm_vae.sh completes. Encodes the entire CelebA-HQ dataset
+#! with the trained VAE encoder and saves latents to disk.
 #!
-#! Edit the options block below, then: sbatch slurm_vae.sh
+#! Edit VAE_CHECKPOINT below, then: sbatch slurm_precompute.sh
 
-#SBATCH -J vae_celeba
-#SBATCH -A MLMI-omo26-SL2-GPU
+#SBATCH -J precompute_latents
+#SBATCH -A MLMI-dpc49-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=10:00:00
+#SBATCH --time=01:00:00
 #SBATCH --mail-type=NONE
 #SBATCH -p ampere
 
 #! ######################################################################################
 #! Set options here:
 
-options="--mode train_vae --total_epochs 50 --batch_size 16 --lr 1e-4 --kl_weight 1e-4 --log_every 100 --save_dir checkpoints_vae"
+VAE_CHECKPOINT="checkpoints_vae/vae_epoch50.pt"
+LATENT_PATH="data/celeba_latents.pt"
+
+options="--mode precompute --vae_checkpoint $VAE_CHECKPOINT --latent_path $LATENT_PATH"
 
 #! ######################################################################################
 
@@ -31,7 +34,7 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 module purge
 module load rhel8/default-amp
 
-PYTHON_EXEC="$HOME/ddpm_venv/bin/python"
+PYTHON_EXEC="/rds/user/dpc49/hpc-work/MLMI4/ddpm_mlmi4/venv/bin/python"
 application="$PYTHON_EXEC -u run.py"
 
 workdir="$SLURM_SUBMIT_DIR"
@@ -39,9 +42,9 @@ export OMP_NUM_THREADS=1
 
 cd $workdir
 echo -e "Changed directory to `pwd`.\n"
-mkdir -p logs checkpoints_vae
+mkdir -p logs data
 JOBID=$SLURM_JOB_ID
-CMD="$application $options > logs/vae.$JOBID"
+CMD="$application $options > logs/precompute.$JOBID"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"

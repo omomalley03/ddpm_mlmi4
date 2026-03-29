@@ -137,6 +137,7 @@ class UNet(nn.Module):
     def __init__(
         self,
         in_channels=3,
+        out_channels=None,
         base_channels=128,
         channel_mults=(1, 2, 2, 2),
         num_res_blocks=2,
@@ -145,6 +146,8 @@ class UNet(nn.Module):
         image_size=32,
     ):
         super().__init__()
+        if out_channels is None:
+            out_channels = in_channels
         self.num_res_blocks = num_res_blocks
         self.num_levels = len(channel_mults)
         time_emb_dim = base_channels * 4
@@ -210,7 +213,7 @@ class UNet(nn.Module):
 
         # Final output
         self.final_norm = nn.GroupNorm(32, ch)
-        self.final_conv = nn.Conv2d(ch, in_channels, 3, padding=1)
+        self.final_conv = nn.Conv2d(ch, out_channels, 3, padding=1)
 
     def forward(self, x, t):
         time_emb = self.time_mlp(t)

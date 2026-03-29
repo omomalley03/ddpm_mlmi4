@@ -11,8 +11,14 @@ import copy
 import os
 import torch
 
+try:
+    import wandb
+except ImportError:
+    wandb = None
+
 from diffusion import GaussianDiffusion
 from dataset import get_dataloader
+from dataset_hires import get_hires_dataloader
 from model import UNet
 
 
@@ -38,6 +44,18 @@ class EMA:
         self.shadow.load_state_dict(state_dict)
 
 
+def _extract_images(batch):
+    """Extract image tensor from a DataLoader batch.
+
+    Supports datasets returning:
+    - tensor images directly
+    - tuples/lists like (images, labels)
+    """
+    if isinstance(batch, (tuple, list)):
+        return batch[0]
+    return batch
+
+
 def train(
     dataset="cifar10",
     batch_size=128,
@@ -51,6 +69,9 @@ def train(
     image_size=32,
     num_workers=4,
     subset_size=None,
+    use_wandb=False,
+    wandb_project="ddpm_mlmi4",
+    wandb_run_name=None,
 ):
     """Main training function.
 
@@ -66,9 +87,34 @@ def train(
         device: Device string.
         image_size: Image spatial size.
         num_workers: DataLoader workers.
+        use_wandb: Whether to log to Weights & Biases.
+        wandb_project: W&B project name.
+        wandb_run_name: W&B run name (auto-generated if None).
     """
     os.makedirs(save_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
+    amp_enabled = device.type == "cuda"
+    scaler = torch.cuda.amp.GradScaler(enabled=amp_enabled)
+
+    if use_wandb:
+        if wandb is None:
+            raise ImportError("wandb is not installed. Install it with `pip install wandb` or disable --wandb.")
+        wandb.init(
+            project=wandb_project,
+            name=wandb_run_name,
+            config=dict(
+                dataset=dataset,
+                batch_size=batch_size,
+                lr=lr,
+                total_steps=total_steps,
+                save_every=save_every,
+                log_every=log_every,
+                image_size=image_size,
+                subset_size=subset_size,
+                device=str(device),
+            ),
+            tags=["train", "pixel-space"],
+        )
 
     # Model
     model = UNet(
@@ -101,15 +147,24 @@ def train(
         print(f"Resumed from step {start_step}")
 
     # Data
-    dataloader = get_dataloader(
-        dataset=dataset, batch_size=batch_size, num_workers=num_workers,
-        subset_size=subset_size,
-    )
+    if dataset == "celeba_hq":
+        dataloader = get_hires_dataloader(
+            dataset="celeba_hq", image_size=image_size, batch_size=batch_size,
+            data_dir="./data", num_workers=num_workers,
+        )
+    else:
+        dataloader = get_dataloader(
+            dataset=dataset, batch_size=batch_size, num_workers=num_workers,
+            subset_size=subset_size,
+        )
     data_iter = iter(dataloader)
 
     param_count = sum(p.numel() for p in model.parameters())
     print(f"Model parameters: {param_count:,}")
     print(f"Training for {total_steps - start_step} steps on {device}")
+    if use_wandb:
+        wandb.summary["param_count"] = param_count
+        wandb.summary["dataset_size"] = len(dataloader.dataset)
 
     model.train()
     running_loss = 0.0
@@ -117,10 +172,12 @@ def train(
     for step in range(start_step, total_steps):
         # Get batch (cycle through dataset)
         try:
-            x0, _ = next(data_iter)
+            batch = next(data_iter)
         except StopIteration:
             data_iter = iter(dataloader)
-            x0, _ = next(data_iter)
+            batch = next(data_iter)
+
+        x0 = _extract_images(batch)
 
         x0 = x0.to(device)
 
@@ -128,12 +185,14 @@ def train(
         t = torch.randint(0, diffusion.T, (x0.shape[0],), device=device)
 
         # Compute loss (Algorithm 1)
-        loss = diffusion.p_losses(model, x0, t)
+        with torch.cuda.amp.autocast(enabled=amp_enabled):
+            loss = diffusion.p_losses(model, x0, t)
 
         # Gradient step
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        optimizer.zero_grad(set_to_none=True)
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
 
         # Update EMA
         ema.update(model)
@@ -144,6 +203,15 @@ def train(
         if (step + 1) % log_every == 0:
             avg_loss = running_loss / log_every
             print(f"Step {step + 1}/{total_steps} | Loss: {avg_loss:.4f}")
+            if use_wandb:
+                wandb.log(
+                    {
+                        "train/loss": avg_loss,
+                        "progress/step": step + 1,
+                        "progress/pct_complete": 100.0 * (step + 1) / total_steps,
+                    },
+                    step=step + 1,
+                )
             running_loss = 0.0
 
         # Checkpointing
@@ -159,5 +227,9 @@ def train(
                 ckpt_path,
             )
             print(f"Saved checkpoint: {ckpt_path}")
+            if use_wandb:
+                wandb.summary["last_checkpoint"] = ckpt_path
 
     print("Training complete.")
+    if use_wandb:
+        wandb.finish()

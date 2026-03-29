@@ -10,6 +10,11 @@ import copy
 import os
 import torch
 
+try:
+    import wandb
+except ImportError:
+    wandb = None
+
 from diffusion import GaussianDiffusion
 from dataset_hires import get_latent_dataloader
 from model import UNet
@@ -48,6 +53,13 @@ def train_latent(
     resume=None,
     device="cuda",
     num_workers=4,
+    stable_diffusion_vae=False,
+    prediction_target="epsilon",
+    objective_type="l_simple",
+    variance_mode="fixed",
+    use_wandb=False,
+    wandb_project="ddpm_mlmi4",
+    wandb_run_name=None,
 ):
     """Train DDPM on precomputed latents.
 
@@ -62,13 +74,43 @@ def train_latent(
         resume: Path to checkpoint to resume from.
         device: Device string.
         num_workers: DataLoader workers.
+        stable_diffusion_vae: If True, use Stable Diffusion's VAE instead of the custom one.
+        prediction_target: What the model predicts ("epsilon" or "mu").
+        objective_type: Objective to optimize ("l_simple", "mse", or "l_vlb").
+        variance_mode: Reverse variance mode ("fixed" or "learned").
+        use_wandb: Whether to log to Weights & Biases.
+        wandb_project: W&B project name.
+        wandb_run_name: W&B run name (auto-generated if None).
     """
     os.makedirs(save_dir, exist_ok=True)
     device = torch.device(device if torch.cuda.is_available() else "cpu")
 
+    if use_wandb:
+        if wandb is None:
+            raise ImportError("wandb is not installed. Install it with `pip install wandb` or disable --wandb.")
+        wandb.init(
+            project=wandb_project,
+            name=wandb_run_name,
+            config=dict(
+                latent_path=latent_path,
+                batch_size=batch_size,
+                lr=lr,
+                total_steps=total_steps,
+                save_every=save_every,
+                log_every=log_every,
+                stable_diffusion_vae=stable_diffusion_vae,
+                prediction_target=prediction_target,
+                objective_type=objective_type,
+                variance_mode=variance_mode,
+                device=str(device),
+            ),
+            tags=["train", "latent-space"],
+        )
+
     # Model — same UNet but with 4 input channels for latents
     model = UNet(
         in_channels=4,
+        out_channels=8 if variance_mode == "learned" else 4,
         base_channels=128,
         channel_mults=(1, 2, 2, 2),
         num_res_blocks=2,
@@ -78,7 +120,13 @@ def train_latent(
     ).to(device)
 
     # Diffusion
-    diffusion = GaussianDiffusion(T=1000, device=device)
+    diffusion = GaussianDiffusion(
+        T=1000,
+        device=device,
+        prediction_target=prediction_target,
+        objective_type=objective_type,
+        variance_mode=variance_mode,
+    )
 
     # Optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.999))
@@ -90,6 +138,26 @@ def train_latent(
     start_step = 0
     if resume is not None:
         checkpoint = torch.load(resume, map_location=device, weights_only=False)
+        ckpt_prediction_target = checkpoint.get("prediction_target")
+        ckpt_objective_type = checkpoint.get("objective_type")
+        ckpt_variance_mode = checkpoint.get("variance_mode")
+
+        if ckpt_prediction_target is not None and ckpt_prediction_target != prediction_target:
+            raise ValueError(
+                f"Resume checkpoint prediction_target={ckpt_prediction_target} does not match "
+                f"requested prediction_target={prediction_target}."
+            )
+        if ckpt_objective_type is not None and ckpt_objective_type != objective_type:
+            raise ValueError(
+                f"Resume checkpoint objective_type={ckpt_objective_type} does not match "
+                f"requested objective_type={objective_type}."
+            )
+        if ckpt_variance_mode is not None and ckpt_variance_mode != variance_mode:
+            raise ValueError(
+                f"Resume checkpoint variance_mode={ckpt_variance_mode} does not match "
+                f"requested variance_mode={variance_mode}."
+            )
+
         model.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
         ema.load_state_dict(checkpoint["ema"])
@@ -98,13 +166,23 @@ def train_latent(
 
     # Data
     dataloader = get_latent_dataloader(
-        latent_path=latent_path, batch_size=batch_size, num_workers=num_workers,
+        latent_path=latent_path, batch_size=batch_size, num_workers=num_workers
     )
 
     param_count = sum(p.numel() for p in model.parameters())
     print(f"Model parameters: {param_count:,}")
     print(f"Latent dataset: {len(dataloader.dataset)} samples")
     print(f"Training for {total_steps - start_step} steps on {device}")
+    print(
+        f"Ablation config: prediction_target={prediction_target}, "
+        f"objective_type={objective_type}, variance_mode={variance_mode}"
+    )
+    if use_wandb:
+        wandb.summary["param_count"] = param_count
+        wandb.summary["dataset_size"] = len(dataloader.dataset)
+        wandb.summary["prediction_target"] = prediction_target
+        wandb.summary["objective_type"] = objective_type
+        wandb.summary["variance_mode"] = variance_mode
 
     data_iter = iter(dataloader)
     model.train()
@@ -140,6 +218,15 @@ def train_latent(
         if (step + 1) % log_every == 0:
             avg_loss = running_loss / log_every
             print(f"Step {step + 1}/{total_steps} | Loss: {avg_loss:.4f}")
+            if use_wandb:
+                wandb.log(
+                    {
+                        "train/loss": avg_loss,
+                        "progress/step": step + 1,
+                        "progress/pct_complete": 100.0 * (step + 1) / total_steps,
+                    },
+                    step=step + 1,
+                )
             running_loss = 0.0
 
         # Checkpointing
@@ -151,9 +238,16 @@ def train_latent(
                     "model": model.state_dict(),
                     "ema": ema.state_dict(),
                     "optimizer": optimizer.state_dict(),
+                    "prediction_target": prediction_target,
+                    "objective_type": objective_type,
+                    "variance_mode": variance_mode,
                 },
                 ckpt_path,
             )
             print(f"Saved checkpoint: {ckpt_path}")
+            if use_wandb:
+                wandb.summary["last_checkpoint"] = ckpt_path
 
     print("Latent diffusion training complete.")
+    if use_wandb:
+        wandb.finish()

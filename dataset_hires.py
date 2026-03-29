@@ -1,44 +1,101 @@
 """
 High-resolution dataset loading for Latent Diffusion.
 
-CelebA-HQ 256×256: downloaded via HuggingFace datasets, normalized to [-1, 1].
+Supports local CelebA-HQ image folders first, with Hugging Face as a fallback.
+Images are normalized to [-1, 1].
 """
 
+import glob
 import os
+
 import torch
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 
 
-class CelebAHQDataset(Dataset):
-    """CelebA-HQ dataset loaded from HuggingFace.
+def _default_celeba_hq_candidates(data_dir):
+    """Return candidate local directories for CelebA-HQ images."""
+    candidates = [
+        os.environ.get("CELEBA_HQ_DIR"),
+        os.path.join(data_dir, "celeba_hq_256"),
+        data_dir,
+    ]
 
-    Downloads ~1GB on first use, then caches locally.
+    kagglehub_root = os.path.expanduser(
+        "~/.cache/kagglehub/datasets/badasstechie/celebahq-resized-256x256/versions"
+    )
+    if os.path.isdir(kagglehub_root):
+        version_dirs = sorted(glob.glob(os.path.join(kagglehub_root, "*", "celeba_hq_256")))
+        candidates.extend(version_dirs)
+
+    return [path for path in candidates if path]
+
+
+def _find_local_celeba_hq_dir(data_dir):
+    """Find a local image directory containing CelebA-HQ files."""
+    for candidate in _default_celeba_hq_candidates(data_dir):
+        if not os.path.isdir(candidate):
+            continue
+
+        has_images = any(
+            glob.glob(os.path.join(candidate, pattern))
+            for pattern in ("*.jpg", "*.jpeg", "*.png")
+        )
+        if has_images:
+            return candidate
+
+    return None
+
+
+class CelebAHQDataset(Dataset):
+    """CelebA-HQ dataset loaded from local files or Hugging Face.
+
+    Prefers local image folders when available.
     """
 
-    def __init__(self, data_dir="./data/celeba_hq", image_size=256, split="train"):
-        from datasets import load_dataset
-
+    def __init__(self, data_dir="./data/celeba_hq", image_size=256, split="train", random_flip=True):
         self.transform = transforms.Compose([
             transforms.Resize(image_size),
             transforms.CenterCrop(image_size),
-            transforms.RandomHorizontalFlip(),
+            transforms.RandomHorizontalFlip() if random_flip else transforms.Lambda(lambda x: x),
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # [0,1] → [-1,1]
         ])
 
-        cache_dir = os.path.join(data_dir, "hf_cache")
-        self.dataset = load_dataset(
-            "huggan/CelebA-HQ",
-            split=split,
-            cache_dir=cache_dir,
-        )
+        self.local_dir = _find_local_celeba_hq_dir(data_dir)
+        self.image_paths = None
+        self.dataset = None
+
+        if self.local_dir is not None:
+            self.image_paths = []
+            for pattern in ("*.jpg", "*.jpeg", "*.png"):
+                self.image_paths.extend(glob.glob(os.path.join(self.local_dir, pattern)))
+            self.image_paths = sorted(self.image_paths)
+            if not self.image_paths:
+                raise RuntimeError(f"No images found in local CelebA-HQ directory: {self.local_dir}")
+            print(f"Loaded CelebA-HQ from local directory: {self.local_dir} ({len(self.image_paths)} images)")
+        else:
+            from datasets import load_dataset
+
+            cache_dir = os.path.join(data_dir, "hf_cache")
+            self.dataset = load_dataset(
+                "huggan/CelebA-HQ",
+                split=split,
+                cache_dir=cache_dir,
+            )
+            print(f"Loaded CelebA-HQ from Hugging Face cache: {cache_dir}")
 
     def __len__(self):
+        if self.image_paths is not None:
+            return len(self.image_paths)
         return len(self.dataset)
 
     def __getitem__(self, idx):
-        image = self.dataset[idx]["image"].convert("RGB")
+        if self.image_paths is not None:
+            image = Image.open(self.image_paths[idx]).convert("RGB")
+        else:
+            image = self.dataset[idx]["image"].convert("RGB")
         return self.transform(image)
 
 
@@ -60,7 +117,8 @@ def get_hires_dataloader(dataset="celeba_hq", image_size=256, batch_size=16,
     """Create a DataLoader for high-resolution images."""
     if dataset == "celeba_hq":
         ds = CelebAHQDataset(data_dir=os.path.join(data_dir, "celeba_hq"),
-                             image_size=image_size)
+                             image_size=image_size,
+                             random_flip=True)
     else:
         raise ValueError(f"Unknown dataset: {dataset}")
 
