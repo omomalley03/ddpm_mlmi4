@@ -1,12 +1,10 @@
 """
-Variational Autoencoder for Latent Diffusion / Latent Space Visualization.
+Custom-Trained Variational Autoencoder for OAM dataset.
 
-Supports arbitrary input sizes and depths via channel_mults.
+Uses:
+    OAM data - 128x128 grayscale: VAE(in_channels=1, channel_mults=(1,2,4,4)) -> 8x8x4 latent
 
-Examples:
-    OAM 320x320 grayscale   -> VAE(in_channels=1, channel_mults=(1,2,4,4)) -> 20x20x8 latent
-
-Loss: MSE reconstruction + KL divergence (kl_weight=1e-4 default).
+Loss: MSE reconstruction + KL divergence (default kl_weight=1e-4).
 """
 
 import torch
@@ -15,11 +13,11 @@ import torch.nn.functional as F
 
 
 class ResBlock(nn.Module):
-    """Pre-activation residual block (no timestep conditioning)."""
+    """Pre-activation residual block"""
 
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        # GroupNorm requires num_groups to divide num_channels
+        # num_groups must divide num_channels
         self.norm1 = nn.GroupNorm(min(32, in_channels), in_channels)
         self.conv1 = nn.Conv2d(in_channels, out_channels, 3, padding=1)
         self.norm2 = nn.GroupNorm(min(32, out_channels), out_channels)
@@ -35,7 +33,7 @@ class ResBlock(nn.Module):
 
 
 class Encoder(nn.Module):
-    """Encode images to latent distribution parameters (mean + logvar).
+    """Encode images to mean + logvar.
 
     Args:
         in_channels: Input image channels.
@@ -110,18 +108,16 @@ class Decoder(nn.Module):
             h = up(h)
             h = stage(h)
         h = F.silu(self.out_norm(h))
-        return torch.tanh(self.out_conv(h))  # output in [-1, 1]
+        return torch.tanh(self.out_conv(h))  # outputs [-1, 1]
 
 
 class VAE(nn.Module):
-    """Variational Autoencoder.
+    """Variational Autoencoder class.
 
     Args:
-        in_channels: Image channels (3 for RGB, 1 for grayscale).
+        in_channels: 3 for RGB, 1 for grayscale.
         base_channels: Base channel count.
         channel_mults: Multipliers per downsampling stage. Length = number of stages.
-            (1,2,4)   -> 3 stages, 8x  spatial compression  (256->32)
-            (1,2,4,4) -> 4 stages, 16x spatial compression  (320->20)
         latent_dim: Number of latent channels.
     """
 

@@ -6,8 +6,8 @@ Architecture: 320x320x1 -> (5 downsampling stages) -> 10x10x4 latent
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4)
 
 Usage:
-    python run.py --mode train_vae_oam --mat_path /path/to/data.mat
-    python run.py --mode train_vae_oam --mat_path /path/to/data.mat --image_size 128 --vae_channel_mults 1 2 4 4
+    python run_oam.py --mode train_vae --mat_path /path/to/data.mat
+    python run_oam.py --mode train_vae --mat_path /path/to/data.mat --image_size 128 --vae_channel_mults 1 2 4 4
 """
 
 import os
@@ -17,7 +17,7 @@ matplotlib.use("Agg")  # non-interactive backend for HPC
 import matplotlib.pyplot as plt
 
 from vae import VAE
-from dataset_oam import get_oam_dataloader
+from datasets.dataset_oam import get_oam_dataloader
 
 # OAM VAE config: 320->160->80->40->20->10, latent = 10x10x4 = 400 dims
 OAM_CHANNEL_MULTS = (1, 2, 4, 4, 4)
