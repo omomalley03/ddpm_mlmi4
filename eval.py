@@ -25,7 +25,7 @@ from model import UNet
 
 def load_inception(device):
     """Load pretrained InceptionV3 with a hook to extract pool3 features."""
-    inception = models.inception_v3(pretrained=True, transform_input=True)
+    inception = models.inception_v3(pretrained=True, transform_input=False)
     inception.eval()
     inception.to(device)
 
@@ -53,7 +53,7 @@ def get_inception_outputs(images, inception, pool3_features, batch_size=128, dev
     for i in range(0, len(images), batch_size):
         batch = images[i : i + batch_size].to(device)
 
-        # Resize to 299×299 (Inception input size)
+        # Resize to 299x299 (Inception input size)
         batch = F.interpolate(batch, size=(299, 299), mode="bilinear", align_corners=False)
 
         logits = inception(batch)
@@ -180,7 +180,7 @@ def evaluate(
     while generated < n_eval:
         this_batch = min(batch_size, n_eval - generated)
         samples = diffusion.p_sample_loop(model, (this_batch, 3, image_size, image_size))
-        # Denormalize [-1,1] → [0,1]
+        # Denormalize [-1,1] -> [0,1]
         samples = (samples + 1.0) / 2.0
         samples = samples.clamp(0.0, 1.0).cpu()
         all_samples.append(samples)

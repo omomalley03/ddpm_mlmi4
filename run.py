@@ -1,19 +1,15 @@
 """
 Entry point for DDPM training and sampling.
 
-Usage:
-    python run.py --mode train --total_steps 1300000
+Example usages:
+CIFAR ex:
+    python run.py --mode train --total_steps 1300000 (but we cut short @ 650k)
     python run.py --mode sample --resume checkpoints/ckpt_1300000.pt --n_samples 64
 
-Latent Diffusion (CelebA-HQ):
-    python run.py --mode train_vae --total_epochs 50
-    python run.py --mode precompute --vae_checkpoint checkpoints_vae/vae_epoch50.pt
-    python run.py --mode train_latent --latent_path data/celeba_latents.pt --total_steps 500000
-    python run.py --mode sample_latent --resume checkpoints_latent/latent_ckpt_500000.pt --vae_checkpoint checkpoints_vae/vae_epoch50.pt
-
-OAM Laser Beams:
+OAM Laser ex::
     python run.py --mode train_vae_oam --mat_path /path/to/data.mat
     python run.py --mode visualize_oam --vae_checkpoint checkpoints_vae_oam/vae_oam_epoch100.pt --mat_path /path/to/data.mat
+    other stuff like training classification CNN, etc. 
 """
 
 import argparse
@@ -26,7 +22,8 @@ def main():
                         choices=["train", "sample", "denoise", "eval",
                                  "train_vae", "precompute", "train_latent", "sample_latent",
                                  "train_vae_oam", "visualize_oam", "train_ddpm_oam", "sample_oam",
-                                 "progression_oam", "interpolate"])
+                                 "progression_oam", "interpolate",
+                                 "train_cnn_turb", "eval_cnn_turb"])
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=2e-4)
@@ -268,6 +265,37 @@ def main():
             modes=args.modes,
             turb_levels=args.turb_levels,
         )
+
+    elif args.mode == "train_cnn_turb":
+        if args.mat_path is None:
+            parser.error("--mat_path is required for train_cnn_turb mode")
+        import types
+        from cnn_turb_classifier import train as train_cnn
+        cnn_args = types.SimpleNamespace(
+            mat_path=args.mat_path,
+            save_dir=args.save_dir if args.save_dir != "checkpoints" else "checkpoints_cnn",
+            epochs=args.total_epochs,
+            batch_size=args.batch_size if args.batch_size != 128 else 64,
+            lr=args.lr if args.lr != 2e-4 else 1e-3,
+            patience=3,
+            turb_levels=args.turb_levels,
+            modes=args.modes,
+            num_workers=args.num_workers,
+        )
+        train_cnn(cnn_args)
+
+    elif args.mode == "eval_cnn_turb":
+        if args.resume is None:
+            parser.error("--resume is required for eval_cnn_turb mode")
+        if args.output_dir is None:
+            parser.error("--output_dir is required for eval_cnn_turb mode")
+        import types
+        from cnn_turb_classifier import evaluate_ddpm
+        cnn_args = types.SimpleNamespace(
+            checkpoint=args.resume,
+            eval_dir=args.output_dir,
+        )
+        evaluate_ddpm(cnn_args)
 
     elif args.mode == "visualize_oam":
         if args.vae_checkpoint is None:

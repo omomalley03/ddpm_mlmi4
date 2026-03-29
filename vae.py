@@ -4,8 +4,7 @@ Variational Autoencoder for Latent Diffusion / Latent Space Visualization.
 Supports arbitrary input sizes and depths via channel_mults.
 
 Examples:
-    CelebA-HQ 256x256 RGB   → VAE(in_channels=3, channel_mults=(1,2,4))   → 32×32×4 latent
-    OAM 320×320 grayscale   → VAE(in_channels=1, channel_mults=(1,2,4,4)) → 20×20×8 latent
+    OAM 320x320 grayscale   -> VAE(in_channels=1, channel_mults=(1,2,4,4)) -> 20x20x8 latent
 
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4 default).
 """
@@ -121,8 +120,8 @@ class VAE(nn.Module):
         in_channels: Image channels (3 for RGB, 1 for grayscale).
         base_channels: Base channel count.
         channel_mults: Multipliers per downsampling stage. Length = number of stages.
-            (1,2,4)   → 3 stages, 8×  spatial compression  (256→32)
-            (1,2,4,4) → 4 stages, 16× spatial compression  (320→20)
+            (1,2,4)   -> 3 stages, 8x  spatial compression  (256->32)
+            (1,2,4,4) -> 4 stages, 16x spatial compression  (320->20)
         latent_dim: Number of latent channels.
     """
 

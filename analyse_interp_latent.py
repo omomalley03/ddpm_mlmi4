@@ -3,30 +3,21 @@ Latent-space slerp interpolation between OAM modes.
 
 Two interpolation modes:
 
-1. Direct latent slerp (no DDPM):
-   - Encode real images x_a, x_b → latent means μ_a, μ_b
-   - Slerp: z_α = slerp(μ_a, μ_b, α)  for α ∈ [0..1]
-   - Decode each z_α with the VAE decoder
-   - Output: one row per pair
+1. Direct interpolation in VAE space:
+   - Encode real images to VAE means, slerp between, decode interpolated values
 
-2. DDPM-style latent slerp (Ho et al. Section 4.3, in latent space):
+2. Interpolation at noising level t*:
    - Requires a trained latent DDPM (--ldm_checkpoint)
-   - Noise μ_a and μ_b to t* using the same ε (DDPM forward process)
+   - Encodes real images to VAE means, noises to a level t* with same DDPM noise
    - Slerp the noisy latents, then reverse-denoise from t* to 0
-   - One row per t* value, columns = α steps
-   - Directly comparable to pixel-space slerp from analyse_interpolation.py
+   - One row per t* value, columns = interp level steps
+   - Does same thing as mode (1) if for t* = 0 
 
 Usage:
-    # Direct latent slerp only:
+    # In
     python analyse_interp_latent.py \\
-        --vae_checkpoint checkpoints_vae_128/vae_oam_epoch100.pt \\
-        --mat_path /path/to/data.mat \\
-        --output_dir analysis_interp_latent
-
-    # With DDPM-style slerp:
-    python analyse_interp_latent.py \\
-        --vae_checkpoint checkpoints_vae_128/vae_oam_epoch100.pt \\
-        --ldm_checkpoint checkpoints_ldm/ldm_ckpt_200000.pt \\
+        --vae_checkpoint [checkpoint for VAE] \\
+        --ldm_checkpoint [checkpoint for latent diffusion] \\
         --mat_path /path/to/data.mat \\
         --output_dir analysis_interp_latent
 """
@@ -261,12 +252,12 @@ def main(
         if turb_a is not None and turb_b is not None:
             # Turbulence interpolation
             tag = f"{mode_a}_turb{turb_a}_to_turb{turb_b}"
-            title = f"Latent slerp: {mode_a} turb={turb_a} → turb={turb_b}  (pair {pair_idx})"
+            title = f"Latent slerp: {mode_a} turb={turb_a} -> turb={turb_b}  (pair {pair_idx})"
         else:
             # Mode interpolation
             turb_tag = f"_turb{turb_level}" if turb_level is not None else ""
             tag = f"{mode_a}_to_{mode_b}{turb_tag}"
-            title = f"Latent slerp: {mode_a} → {mode_b}{turb_tag}  (pair {pair_idx})"
+            title = f"Latent slerp: {mode_a} -> {mode_b}{turb_tag}  (pair {pair_idx})"
 
         out_path = os.path.join(output_dir, f"latent_interp_{tag}_pair{pair_idx}.png")
         save_grid(rows, row_labels, col_labels, out_path, title=title)

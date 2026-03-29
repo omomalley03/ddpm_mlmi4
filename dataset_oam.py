@@ -92,7 +92,7 @@ class OAMDataset(Dataset):
             x_key = f"{mode}_X"
             l_key = f"{mode}_labels"
 
-            # Shape: (H, W, 1, N) → (N, 1, H, W)
+            # Shape: (H, W, 1, N) -> (N, 1, H, W)
             imgs = data[x_key]  # (320, 320, 1, N)
             imgs = imgs.transpose(3, 2, 0, 1).astype(np.float32)  # (N, 1, 320, 320)
 
@@ -143,7 +143,7 @@ class OAMDataset(Dataset):
                                 align_corners=False).squeeze(0)
 
         if self.normalize:
-            # Per-image normalization: [0, max] → [-1, 1]
+            # Per-image normalization: [0, max] -> [-1, 1]
             vmax = img.max()
             if vmax > 0:
                 img = img / vmax           # [0, 1]

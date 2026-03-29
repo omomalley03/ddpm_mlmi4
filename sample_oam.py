@@ -134,4 +134,4 @@ def sample_progression(
     out_path = os.path.join(output_dir, f"progression_step{checkpoint['step']}.png")
     save_image(grid, out_path)
     print(f"Saved denoising progression grid: {out_path}")
-    print(f"  Grid layout: {n_samples} rows (samples) × {n_frames} columns (timesteps)")
+    print(f"  Grid layout: {n_samples} rows (samples) x {n_frames} columns (timesteps)")

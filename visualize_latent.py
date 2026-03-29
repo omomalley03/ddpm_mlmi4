@@ -5,7 +5,7 @@ Four visualizations:
   1. PCA / t-SNE scatter  — project all latents to 2D, colour by mode or turbulence strength
   2. Latent interpolation — linear path between two samples in latent space
   3. PCA traversal        — walk along the top-K principal components of the latent space
-  4. Reconstruction grid  — original vs reconstructed for each mode × turbulence level
+  4. Reconstruction grid  — original vs reconstructed for each mode x turbulence level
 
 Usage:
     python run.py --mode visualize_oam \
@@ -205,7 +205,7 @@ def plot_interpolation(vae, dataset, device, output_dir, n_steps=10,
 
     name_a = dataset.mode_display_name(mode_a)
     name_b = dataset.mode_display_name(mode_b)
-    plt.suptitle(f"Latent Interpolation: {name_a} → {name_b}", fontsize=10)
+    plt.suptitle(f"Latent Interpolation: {name_a} -> {name_b}", fontsize=10)
     plt.tight_layout()
 
     fname = f"interpolation_{dataset.modes[mode_a]}_to_{dataset.modes[mode_b]}_.png"
@@ -336,7 +336,7 @@ def plot_reconstruction_grid(vae, dataset, device, output_dir, n_per_cell=3):
                 axes[0, base_col].set_title(f"Turb {turb_cat}\nOrig", fontsize=7)
                 axes[0, base_col + 1].set_title(f"Turb {turb_cat}\nRecon", fontsize=7)
 
-    plt.suptitle("OAM VAE Reconstructions (Mode × Turbulence)", fontsize=11)
+    plt.suptitle("OAM VAE Reconstructions (Mode x Turbulence)", fontsize=11)
     plt.tight_layout()
     out_path = os.path.join(output_dir, "reconstruction_grid.png")
     plt.savefig(out_path, dpi=120, bbox_inches="tight")

@@ -2,8 +2,8 @@
 Sample from the Latent DDPM and decode with the frozen VAE.
 
 Pipeline:
-  1. Sample latent tensors (4×8×8) using the trained latent DDPM.
-  2. Decode each latent with the frozen 128px VAE decoder → 128×128 images.
+  1. Sample latent tensors (4x8x8) using the trained latent DDPM.
+  2. Decode each latent with the frozen 128px VAE decoder -> 128x128 images.
   3. Save a sample grid and compare side-by-side with pixel-DDPM samples
      (if --pixel_checkpoint is provided).
 

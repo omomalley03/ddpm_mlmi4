@@ -2,14 +2,15 @@
 Train a latent DDPM on VAE-encoded OAM images.
 
 Pipeline:
-  1. Load trained VAE (128×128, 4-stage: latent 4×8×8).
-  2. Encode all OAM images once → TensorDataset of latents.
-  3. Train a small UNet DDPM on those latents (in_channels=4, 8×8 spatial).
+  0. Pre-req: train a VAE on oam images, checkpoint saved at  checkpoints_vae_128/vae_oam_epoch100.pt
+  1. Load trained VAE (128x128, 4-stage downscaling to latent 4x8x8).
+  2. Encode all OAM images once -> TensorDataset of latents.
+  3. Train a small UNet DDPM on those latents (in_channels=4, 8x8 spatial).
 
 The latent DDPM UNet uses:
-  channel_mults = (1, 2)  → 1 downsampling stage (8→4), avoids spatial collapse
+  channel_mults = (1, 2)  -> 1 downsampling stage (8->4), avoids spatial collapse
   base_channels = 64
-  attn_resolutions = (4,) → attention at the 4×4 bottleneck
+  attn_resolutions = (4,) -> attention at the 4x4 bottleneck
 
 Usage:
     python train_ddpm_latent.py \\
@@ -39,7 +40,7 @@ LATENT_SIZE = VAE_IMAGE_SIZE // (2 ** len(VAE_CHANNEL_MULTS))  # 8
 # Latent DDPM UNet config
 LDM_CHANNEL_MULTS = (1, 2)
 LDM_BASE_CHANNELS = 64
-LDM_ATN_RES = (LATENT_SIZE // 2,)  # attention at 4×4
+LDM_ATN_RES = (LATENT_SIZE // 2,)  # attention at 4x4
 
 
 class EMA:

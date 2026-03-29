@@ -1,7 +1,7 @@
 """
 Sample images from a trained DDPM checkpoint.
 
-Loads EMA weights and runs the full reverse process (Algorithm 2).
+Loads EMA weights and runs the full reverse process (Algorithm 2 in ho paper).
 """
 
 import os
@@ -132,7 +132,7 @@ def sample_progression(
     out_path = os.path.join(output_dir, f"progression_step{checkpoint['step']}_final.png")
     save_image(grid, out_path)
     print(f"Saved denoising progression grid: {out_path}")
-    print(f" Grid layout: {n_samples} rows (samples) × {n_frames} columns (timesteps)")
+    print(f" Grid layout: {n_samples} rows (samples) x {n_frames} columns (timesteps)")
 
 
 def sample_interpolate(

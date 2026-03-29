@@ -7,7 +7,7 @@ Training loop for DDPM with EMA (Ho et al. 2020).
 - Periodic checkpointing
 """
 
-import copy
+import co
 import os
 import torch
 

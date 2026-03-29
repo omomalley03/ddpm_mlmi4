@@ -2,9 +2,9 @@
 U-Net architecture for DDPM (Ho et al. 2020).
 
 Based on the PixelCNN++ / Wide ResNet backbone with:
-- Pre-activation residual blocks (GroupNorm → SiLU → Conv)
+- Pre-activation residual blocks (GroupNorm -> SiLU -> Conv)
 - Sinusoidal timestep embeddings
-- Single-head self-attention at 16×16 resolution
+- Single-head self-attention at 16x16 resolution
 - Skip connections via concatenation
 """
 
@@ -34,7 +34,7 @@ class SinusoidalPositionEmbedding(nn.Module):
 class ResidualBlock(nn.Module):
     """Pre-activation residual block with timestep conditioning.
 
-    GroupNorm → SiLU → Conv → (+time_emb) → GroupNorm → SiLU → Dropout → Conv + skip
+    GroupNorm -> SiLU -> Conv -> (+time_emb) -> GroupNorm -> SiLU -> Dropout -> Conv + skip
     """
 
     def __init__(self, in_channels, out_channels, time_emb_dim, dropout=0.1):

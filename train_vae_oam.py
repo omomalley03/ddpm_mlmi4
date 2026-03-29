@@ -1,8 +1,8 @@
 """
 VAE training on OAM laser beam images.
 
-Architecture: 320×320×1 → (5 downsampling stages) → 10×10×4 latent
-             or 128×128×1 → (4 downsampling stages) →  8×8×4 latent
+Architecture: 320x320x1 -> (5 downsampling stages) -> 10x10x4 latent
+             or 128x128x1 -> (4 downsampling stages) ->  8x8x4 latent
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4)
 
 Usage:
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from vae import VAE
 from dataset_oam import get_oam_dataloader
 
-# OAM VAE config: 320→160→80→40→20→10, latent = 10×10×4 = 400 dims
+# OAM VAE config: 320->160->80->40->20->10, latent = 10x10x4 = 400 dims
 OAM_CHANNEL_MULTS = (1, 2, 4, 4, 4)
 OAM_LATENT_DIM = 4
 OAM_BASE_CHANNELS = 64
@@ -37,7 +37,7 @@ def train_vae_oam(
     resume=None,
     device="cuda",
     num_workers=4,
-    image_size=None,  # None = keep original 320×320
+    image_size=None,  # None = keep original 320x320
     channel_mults=None,  # None = use OAM_CHANNEL_MULTS
     modes=None,       # None = all modes in MODES list; e.g. ["gauss"] or ["gauss","p4"]
     turb_levels=None, # None = all turbulence levels; e.g. [1,2,3] or [3]
@@ -149,7 +149,7 @@ def _save_recon_grid(vae, dataset, device, save_dir, epoch):
                 img_in = img.unsqueeze(0).to(device)
                 recon, _, _ = vae(img_in)
 
-                # Convert to numpy for display: [-1,1] → [0,1]
+                # Convert to numpy for display: [-1,1] -> [0,1]
                 orig_np = ((img.squeeze().cpu().numpy() + 1) / 2).clip(0, 1)
                 recon_np = ((recon.squeeze().cpu().numpy() + 1) / 2).clip(0, 1)
 
