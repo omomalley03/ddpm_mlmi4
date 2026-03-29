@@ -35,4 +35,4 @@ data/*.tar.gz
 
 logs/
 others/
-analysis*/
+analysis_*/
