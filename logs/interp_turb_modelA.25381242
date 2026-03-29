@@ -1,0 +1,17 @@
+
+=== turb 1 → turb 3 (full range) ===
+Device: cuda
+Loaded EMA checkpoint from step 50000
+Loaded 17725 images from 5 modes
+  Modes: ['gauss', 'p1', 'p2', 'p3', 'p4']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3, 4]
+Dataset: 17725 images | Modes: ['gauss', 'p1', 'p2', 'p3', 'p4']
+t* values: [250, 500, 750, 999] | α steps: 9 | pairs: 3
+
+--- Turbulence interpolation: mode=0 turb 1 → 3 ---
+Saved: analysis_interp_between_turbs/interpolation_gauss_turb1_to_turb3_pair1.png
+Saved: analysis_interp_between_turbs/interpolation_gauss_turb1_to_turb3_pair2.png
+Saved: analysis_interp_between_turbs/interpolation_gauss_turb1_to_turb3_pair3.png
+
+Done. Outputs in: analysis_interp_between_turbs/

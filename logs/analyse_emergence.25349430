@@ -1,0 +1,20 @@
+Device: cuda
+Loaded EMA checkpoint from step 40000
+
+Running 8 paired trajectories (gauss + p4, same noise)...
+  Seed 1/8
+Saved: analysis_emergence/emergence_frames.png
+  Seed 2/8
+  Seed 3/8
+  Seed 4/8
+  Seed 5/8
+  Seed 6/8
+  Seed 7/8
+  Seed 8/8
+
+--- Plotting single-seed metric ---
+Saved: analysis_emergence/emergence_metric.png
+--- Plotting averaged metric ---
+Saved: analysis_emergence/emergence_metric_averaged.png
+
+Done. Outputs in: analysis_emergence/

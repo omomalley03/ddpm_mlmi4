@@ -1,0 +1,78 @@
+Device: cuda
+
+Loading real OAM images...
+Loaded 2510 images from 1 modes
+  Modes: ['gauss']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3]
+Loaded 2510 real images  (modes=['gauss'], turb_categories=[1, 2, 3])
+n_real=2510 | n_eval per pipeline=512
+
+Loading InceptionV3...
+/rds/project/rds-xyBFuSj0hm0/MLMI2.M2025/miniconda3/envs/mlmi2/lib/python3.10/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/rds/project/rds-xyBFuSj0hm0/MLMI2.M2025/miniconda3/envs/mlmi2/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=Inception_V3_Weights.IMAGENET1K_V1`. You can also use `weights=Inception_V3_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+
+Extracting real image features...
+  Inception: 640/2510
+  Inception: 1280/2510
+  Inception: 1920/2510
+  Inception: 2510/2510
+
+=======================================================
+Pipeline: LDM (VAE + latent DDPM)
+=======================================================
+Loaded VAE from epoch 100
+Loaded latent DDPM from step 50000
+
+Generating 512 LDM samples...
+  Generated 64/512
+  Generated 128/512
+  Generated 192/512
+  Generated 256/512
+  Generated 320/512
+  Generated 384/512
+  Generated 448/512
+  Generated 512/512
+
+Extracting LDM features...
+
+LDM FID: 6.4850
+
+=======================================================
+Pipeline: Pixel DDPM
+=======================================================
+Loaded pixel DDPM from step 50000
+
+Generating 512 pixel DDPM samples...
+  Generated 64/512
+  Generated 128/512
+  Generated 192/512
+  Generated 256/512
+  Generated 320/512
+  Generated 384/512
+  Generated 448/512
+  Generated 512/512
+
+Extracting pixel DDPM features...
+
+Pixel DDPM FID: 120.1314
+
+=======================================================
+Real images:  N=2510  modes=['gauss']  turb_levels=[1, 2, 3]
+
+--- LDM (VAE + latent DDPM) ---
+VAE:         checkpoints_vae_128_modelA/vae_oam_epoch100.pt
+LDM:         checkpoints_ldm_modelA/ldm_ckpt_50000.pt  (step=50000)
+N_generated: 512
+FID:         6.4850
+
+--- Pixel DDPM ---
+Checkpoint:  checkpoints_gauss_turb3/ckpt_50000.pt  (step=50000)
+N_generated: 512
+FID:         120.1314
+
+=======================================================
+
+Results saved to eval_oam_fid_modelA/fid_results.txt

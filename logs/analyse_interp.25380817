@@ -1,0 +1,19 @@
+Device: cuda
+Loaded EMA checkpoint from step 50000
+Loaded 17725 images from 5 modes
+  Modes: ['gauss', 'p1', 'p2', 'p3', 'p4']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3, 4]
+Dataset: 17725 images | Modes: ['gauss', 'p1', 'p2', 'p3', 'p4']
+t* values: [250, 500, 750, 999] | α steps: 9 | pairs: 3
+
+--- Generating interpolation grids ---
+
+Turbulence level: 1
+Saved: analysis_interpolation_oam_turb3/interpolation_turb1_pair1.png
+Saved: analysis_interpolation_oam_turb3/interpolation_turb1_pair2.png
+Saved: analysis_interpolation_oam_turb3/interpolation_turb1_pair3.png
+
+Turbulence level: 2
+Saved: analysis_interpolation_oam_turb3/interpolation_turb2_pair1.png
+Saved: analysis_interpolation_oam_turb3/interpolation_turb2_pair2.png

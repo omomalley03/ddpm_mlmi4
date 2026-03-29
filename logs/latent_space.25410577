@@ -1,0 +1,21 @@
+Device: cuda
+Loaded VAE from epoch 100
+Loaded 2510 images from 1 modes
+  Modes: ['gauss']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3]
+Dataset: 2510 images | modes=['gauss'] | turb categories=[1, 2, 3]
+Encoded 2510 images → latent shape per image: (256,)
+
+--- PCA traversal ---
+Saved: analysis_latent_space_modelA/latent_pca_traversal.png
+Saved: analysis_latent_space_modelA/latent_pca_variance.png
+
+--- t-SNE scatter ---
+t-SNE: subsampled 2000/2510 points
+Running t-SNE (perplexity=30.0)...
+/rds/user/omo26/hpc-work/MLMI4/DDPM/analyse_latent_space.py:191: MatplotlibDeprecationWarning: The get_cmap function was deprecated in Matplotlib 3.7 and will be removed in 3.11. Use ``matplotlib.colormaps[name]`` or ``matplotlib.colormaps.get_cmap()`` or ``pyplot.get_cmap()`` instead.
+  cmap = plt.cm.get_cmap("tab10", len(unique_modes))
+Saved: analysis_latent_space_modelA/latent_tsne.png
+
+Done. Outputs in: analysis_latent_space_modelA/

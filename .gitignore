@@ -32,3 +32,7 @@ slurm-*.out
 vae_omo.py
 
 data/*.tar.gz
+
+logs/
+others/
+analysis_*/

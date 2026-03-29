@@ -1,0 +1,9 @@
+Loaded VAE from epoch 100
+Loaded latent DDPM from step 50000
+Loaded 2510 images from 1 modes
+  Modes: ['gauss']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3]
+Saved: analysis_interp_latent_modelA/latent_interp_gauss_to_gauss_turb1_pair0.png
+Saved: analysis_interp_latent_modelA/latent_interp_gauss_to_gauss_turb1_pair1.png
+Saved: analysis_interp_latent_modelA/latent_interp_gauss_to_gauss_turb1_pair2.png

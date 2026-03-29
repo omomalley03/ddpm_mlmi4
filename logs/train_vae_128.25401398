@@ -1,0 +1,283 @@
+VAE parameters: 18,863,817
+Latent shape per image: (4, 8, 8) = 256 dims
+Loaded 2510 images from 1 modes
+  Modes: ['gauss']
+  Image shape: (1, 128, 128)
+  Turbulence categories: [1, 2, 3]
+Dataset: 2510 images | Training on cuda
+Epoch 1/100 | Step 50 | Recon: 0.0104 | KL: 1.16
+Epoch 1/100 done | Avg Recon: 0.0248 | Avg KL: 1.01
+Epoch 2/100 | Step 100 | Recon: 0.0077 | KL: 1.05
+Epoch 2/100 | Step 150 | Recon: 0.0037 | KL: 1.29
+Epoch 2/100 done | Avg Recon: 0.0068 | Avg KL: 1.17
+Epoch 3/100 | Step 200 | Recon: 0.0031 | KL: 1.41
+Epoch 3/100 done | Avg Recon: 0.0034 | Avg KL: 1.38
+Epoch 4/100 | Step 250 | Recon: 0.0023 | KL: 1.44
+Epoch 4/100 | Step 300 | Recon: 0.0026 | KL: 1.55
+Epoch 4/100 done | Avg Recon: 0.0025 | Avg KL: 1.53
+Epoch 5/100 | Step 350 | Recon: 0.0021 | KL: 1.53
+Epoch 5/100 done | Avg Recon: 0.0022 | Avg KL: 1.53
+Epoch 6/100 | Step 400 | Recon: 0.0020 | KL: 1.54
+Epoch 6/100 | Step 450 | Recon: 0.0018 | KL: 1.49
+Epoch 6/100 done | Avg Recon: 0.0020 | Avg KL: 1.54
+Epoch 7/100 | Step 500 | Recon: 0.0020 | KL: 1.58
+Epoch 7/100 done | Avg Recon: 0.0019 | Avg KL: 1.52
+Epoch 8/100 | Step 550 | Recon: 0.0018 | KL: 1.55
+Epoch 8/100 | Step 600 | Recon: 0.0019 | KL: 1.48
+Epoch 8/100 done | Avg Recon: 0.0018 | Avg KL: 1.51
+Epoch 9/100 | Step 650 | Recon: 0.0018 | KL: 1.48
+Epoch 9/100 | Step 700 | Recon: 0.0017 | KL: 1.47
+Epoch 9/100 done | Avg Recon: 0.0018 | Avg KL: 1.49
+Epoch 10/100 | Step 750 | Recon: 0.0021 | KL: 1.43
+Epoch 10/100 done | Avg Recon: 0.0018 | Avg KL: 1.47
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch10.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch10.png
+Epoch 11/100 | Step 800 | Recon: 0.0017 | KL: 1.43
+Epoch 11/100 | Step 850 | Recon: 0.0016 | KL: 1.43
+Epoch 11/100 done | Avg Recon: 0.0017 | Avg KL: 1.44
+Epoch 12/100 | Step 900 | Recon: 0.0017 | KL: 1.45
+Epoch 12/100 done | Avg Recon: 0.0017 | Avg KL: 1.43
+Epoch 13/100 | Step 950 | Recon: 0.0017 | KL: 1.44
+Epoch 13/100 | Step 1000 | Recon: 0.0016 | KL: 1.40
+Epoch 13/100 done | Avg Recon: 0.0017 | Avg KL: 1.40
+Epoch 14/100 | Step 1050 | Recon: 0.0015 | KL: 1.36
+Epoch 14/100 done | Avg Recon: 0.0017 | Avg KL: 1.39
+Epoch 15/100 | Step 1100 | Recon: 0.0016 | KL: 1.38
+Epoch 15/100 | Step 1150 | Recon: 0.0016 | KL: 1.35
+Epoch 15/100 done | Avg Recon: 0.0016 | Avg KL: 1.37
+Epoch 16/100 | Step 1200 | Recon: 0.0018 | KL: 1.39
+Epoch 16/100 done | Avg Recon: 0.0015 | Avg KL: 1.35
+Epoch 17/100 | Step 1250 | Recon: 0.0015 | KL: 1.34
+Epoch 17/100 | Step 1300 | Recon: 0.0017 | KL: 1.36
+Epoch 17/100 done | Avg Recon: 0.0015 | Avg KL: 1.33
+Epoch 18/100 | Step 1350 | Recon: 0.0015 | KL: 1.33
+Epoch 18/100 | Step 1400 | Recon: 0.0014 | KL: 1.32
+Epoch 18/100 done | Avg Recon: 0.0015 | Avg KL: 1.33
+Epoch 19/100 | Step 1450 | Recon: 0.0014 | KL: 1.30
+Epoch 19/100 done | Avg Recon: 0.0015 | Avg KL: 1.32
+Epoch 20/100 | Step 1500 | Recon: 0.0016 | KL: 1.33
+Epoch 20/100 | Step 1550 | Recon: 0.0015 | KL: 1.33
+Epoch 20/100 done | Avg Recon: 0.0014 | Avg KL: 1.31
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch20.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch20.png
+Epoch 21/100 | Step 1600 | Recon: 0.0014 | KL: 1.32
+Epoch 21/100 done | Avg Recon: 0.0014 | Avg KL: 1.30
+Epoch 22/100 | Step 1650 | Recon: 0.0014 | KL: 1.30
+Epoch 22/100 | Step 1700 | Recon: 0.0013 | KL: 1.26
+Epoch 22/100 done | Avg Recon: 0.0014 | Avg KL: 1.29
+Epoch 23/100 | Step 1750 | Recon: 0.0013 | KL: 1.28
+Epoch 23/100 done | Avg Recon: 0.0013 | Avg KL: 1.28
+Epoch 24/100 | Step 1800 | Recon: 0.0012 | KL: 1.25
+Epoch 24/100 | Step 1850 | Recon: 0.0013 | KL: 1.30
+Epoch 24/100 done | Avg Recon: 0.0013 | Avg KL: 1.27
+Epoch 25/100 | Step 1900 | Recon: 0.0012 | KL: 1.29
+Epoch 25/100 | Step 1950 | Recon: 0.0014 | KL: 1.28
+Epoch 25/100 done | Avg Recon: 0.0013 | Avg KL: 1.26
+Epoch 26/100 | Step 2000 | Recon: 0.0012 | KL: 1.26
+Epoch 26/100 done | Avg Recon: 0.0012 | Avg KL: 1.27
+Epoch 27/100 | Step 2050 | Recon: 0.0012 | KL: 1.26
+Epoch 27/100 | Step 2100 | Recon: 0.0012 | KL: 1.25
+Epoch 27/100 done | Avg Recon: 0.0011 | Avg KL: 1.24
+Epoch 28/100 | Step 2150 | Recon: 0.0010 | KL: 1.21
+Epoch 28/100 done | Avg Recon: 0.0011 | Avg KL: 1.25
+Epoch 29/100 | Step 2200 | Recon: 0.0011 | KL: 1.24
+Epoch 29/100 | Step 2250 | Recon: 0.0010 | KL: 1.23
+Epoch 29/100 done | Avg Recon: 0.0011 | Avg KL: 1.23
+Epoch 30/100 | Step 2300 | Recon: 0.0011 | KL: 1.23
+Epoch 30/100 done | Avg Recon: 0.0010 | Avg KL: 1.22
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch30.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch30.png
+Epoch 31/100 | Step 2350 | Recon: 0.0011 | KL: 1.21
+Epoch 31/100 | Step 2400 | Recon: 0.0011 | KL: 1.25
+Epoch 31/100 done | Avg Recon: 0.0010 | Avg KL: 1.21
+Epoch 32/100 | Step 2450 | Recon: 0.0009 | KL: 1.20
+Epoch 32/100 done | Avg Recon: 0.0010 | Avg KL: 1.20
+Epoch 33/100 | Step 2500 | Recon: 0.0010 | KL: 1.19
+Epoch 33/100 | Step 2550 | Recon: 0.0010 | KL: 1.19
+Epoch 33/100 done | Avg Recon: 0.0010 | Avg KL: 1.19
+Epoch 34/100 | Step 2600 | Recon: 0.0010 | KL: 1.23
+Epoch 34/100 | Step 2650 | Recon: 0.0008 | KL: 1.17
+Epoch 34/100 done | Avg Recon: 0.0009 | Avg KL: 1.19
+Epoch 35/100 | Step 2700 | Recon: 0.0009 | KL: 1.18
+Epoch 35/100 done | Avg Recon: 0.0009 | Avg KL: 1.18
+Epoch 36/100 | Step 2750 | Recon: 0.0010 | KL: 1.18
+Epoch 36/100 | Step 2800 | Recon: 0.0009 | KL: 1.16
+Epoch 36/100 done | Avg Recon: 0.0009 | Avg KL: 1.17
+Epoch 37/100 | Step 2850 | Recon: 0.0009 | KL: 1.21
+Epoch 37/100 done | Avg Recon: 0.0009 | Avg KL: 1.17
+Epoch 38/100 | Step 2900 | Recon: 0.0008 | KL: 1.14
+Epoch 38/100 | Step 2950 | Recon: 0.0008 | KL: 1.15
+Epoch 38/100 done | Avg Recon: 0.0009 | Avg KL: 1.15
+Epoch 39/100 | Step 3000 | Recon: 0.0008 | KL: 1.21
+Epoch 39/100 done | Avg Recon: 0.0008 | Avg KL: 1.15
+Epoch 40/100 | Step 3050 | Recon: 0.0009 | KL: 1.14
+Epoch 40/100 | Step 3100 | Recon: 0.0007 | KL: 1.11
+Epoch 40/100 done | Avg Recon: 0.0009 | Avg KL: 1.15
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch40.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch40.png
+Epoch 41/100 | Step 3150 | Recon: 0.0009 | KL: 1.15
+Epoch 41/100 done | Avg Recon: 0.0008 | Avg KL: 1.13
+Epoch 42/100 | Step 3200 | Recon: 0.0008 | KL: 1.13
+Epoch 42/100 | Step 3250 | Recon: 0.0009 | KL: 1.10
+Epoch 42/100 done | Avg Recon: 0.0009 | Avg KL: 1.12
+Epoch 43/100 | Step 3300 | Recon: 0.0010 | KL: 1.15
+Epoch 43/100 | Step 3350 | Recon: 0.0008 | KL: 1.10
+Epoch 43/100 done | Avg Recon: 0.0008 | Avg KL: 1.12
+Epoch 44/100 | Step 3400 | Recon: 0.0009 | KL: 1.09
+Epoch 44/100 done | Avg Recon: 0.0008 | Avg KL: 1.11
+Epoch 45/100 | Step 3450 | Recon: 0.0008 | KL: 1.12
+Epoch 45/100 | Step 3500 | Recon: 0.0007 | KL: 1.07
+Epoch 45/100 done | Avg Recon: 0.0008 | Avg KL: 1.10
+Epoch 46/100 | Step 3550 | Recon: 0.0008 | KL: 1.08
+Epoch 46/100 done | Avg Recon: 0.0008 | Avg KL: 1.11
+Epoch 47/100 | Step 3600 | Recon: 0.0007 | KL: 1.07
+Epoch 47/100 | Step 3650 | Recon: 0.0007 | KL: 1.12
+Epoch 47/100 done | Avg Recon: 0.0007 | Avg KL: 1.09
+Epoch 48/100 | Step 3700 | Recon: 0.0008 | KL: 1.09
+Epoch 48/100 done | Avg Recon: 0.0008 | Avg KL: 1.10
+Epoch 49/100 | Step 3750 | Recon: 0.0007 | KL: 1.05
+Epoch 49/100 | Step 3800 | Recon: 0.0006 | KL: 1.06
+Epoch 49/100 done | Avg Recon: 0.0008 | Avg KL: 1.09
+Epoch 50/100 | Step 3850 | Recon: 0.0007 | KL: 1.05
+Epoch 50/100 | Step 3900 | Recon: 0.0006 | KL: 1.04
+Epoch 50/100 done | Avg Recon: 0.0007 | Avg KL: 1.07
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch50.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch50.png
+Epoch 51/100 | Step 3950 | Recon: 0.0007 | KL: 1.04
+Epoch 51/100 done | Avg Recon: 0.0007 | Avg KL: 1.07
+Epoch 52/100 | Step 4000 | Recon: 0.0009 | KL: 1.12
+Epoch 52/100 | Step 4050 | Recon: 0.0008 | KL: 1.06
+Epoch 52/100 done | Avg Recon: 0.0007 | Avg KL: 1.07
+Epoch 53/100 | Step 4100 | Recon: 0.0006 | KL: 1.09
+Epoch 53/100 done | Avg Recon: 0.0007 | Avg KL: 1.06
+Epoch 54/100 | Step 4150 | Recon: 0.0007 | KL: 1.08
+Epoch 54/100 | Step 4200 | Recon: 0.0007 | KL: 1.06
+Epoch 54/100 done | Avg Recon: 0.0007 | Avg KL: 1.06
+Epoch 55/100 | Step 4250 | Recon: 0.0007 | KL: 1.04
+Epoch 55/100 done | Avg Recon: 0.0007 | Avg KL: 1.04
+Epoch 56/100 | Step 4300 | Recon: 0.0007 | KL: 1.01
+Epoch 56/100 | Step 4350 | Recon: 0.0007 | KL: 1.03
+Epoch 56/100 done | Avg Recon: 0.0007 | Avg KL: 1.04
+Epoch 57/100 | Step 4400 | Recon: 0.0007 | KL: 1.06
+Epoch 57/100 done | Avg Recon: 0.0007 | Avg KL: 1.04
+Epoch 58/100 | Step 4450 | Recon: 0.0007 | KL: 1.02
+Epoch 58/100 | Step 4500 | Recon: 0.0007 | KL: 1.08
+Epoch 58/100 done | Avg Recon: 0.0007 | Avg KL: 1.04
+Epoch 59/100 | Step 4550 | Recon: 0.0006 | KL: 1.03
+Epoch 59/100 | Step 4600 | Recon: 0.0007 | KL: 1.00
+Epoch 59/100 done | Avg Recon: 0.0006 | Avg KL: 1.03
+Epoch 60/100 | Step 4650 | Recon: 0.0006 | KL: 1.02
+Epoch 60/100 done | Avg Recon: 0.0007 | Avg KL: 1.02
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch60.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch60.png
+Epoch 61/100 | Step 4700 | Recon: 0.0009 | KL: 1.10
+Epoch 61/100 | Step 4750 | Recon: 0.0006 | KL: 1.01
+Epoch 61/100 done | Avg Recon: 0.0008 | Avg KL: 1.04
+Epoch 62/100 | Step 4800 | Recon: 0.0006 | KL: 1.01
+Epoch 62/100 done | Avg Recon: 0.0006 | Avg KL: 1.03
+Epoch 63/100 | Step 4850 | Recon: 0.0005 | KL: 0.97
+Epoch 63/100 | Step 4900 | Recon: 0.0006 | KL: 1.03
+Epoch 63/100 done | Avg Recon: 0.0006 | Avg KL: 1.01
+Epoch 64/100 | Step 4950 | Recon: 0.0006 | KL: 1.00
+Epoch 64/100 done | Avg Recon: 0.0006 | Avg KL: 1.01
+Epoch 65/100 | Step 5000 | Recon: 0.0006 | KL: 1.04
+Epoch 65/100 | Step 5050 | Recon: 0.0006 | KL: 1.02
+Epoch 65/100 done | Avg Recon: 0.0006 | Avg KL: 1.01
+Epoch 66/100 | Step 5100 | Recon: 0.0006 | KL: 1.06
+Epoch 66/100 done | Avg Recon: 0.0006 | Avg KL: 1.00
+Epoch 67/100 | Step 5150 | Recon: 0.0008 | KL: 0.97
+Epoch 67/100 | Step 5200 | Recon: 0.0007 | KL: 1.04
+Epoch 67/100 done | Avg Recon: 0.0006 | Avg KL: 1.01
+Epoch 68/100 | Step 5250 | Recon: 0.0006 | KL: 0.97
+Epoch 68/100 | Step 5300 | Recon: 0.0007 | KL: 1.02
+Epoch 68/100 done | Avg Recon: 0.0006 | Avg KL: 1.00
+Epoch 69/100 | Step 5350 | Recon: 0.0006 | KL: 1.02
+Epoch 69/100 done | Avg Recon: 0.0006 | Avg KL: 0.99
+Epoch 70/100 | Step 5400 | Recon: 0.0005 | KL: 0.93
+Epoch 70/100 | Step 5450 | Recon: 0.0006 | KL: 1.04
+Epoch 70/100 done | Avg Recon: 0.0006 | Avg KL: 0.99
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch70.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch70.png
+Epoch 71/100 | Step 5500 | Recon: 0.0006 | KL: 0.97
+Epoch 71/100 done | Avg Recon: 0.0006 | Avg KL: 0.98
+Epoch 72/100 | Step 5550 | Recon: 0.0006 | KL: 1.02
+Epoch 72/100 | Step 5600 | Recon: 0.0006 | KL: 0.98
+Epoch 72/100 done | Avg Recon: 0.0006 | Avg KL: 0.99
+Epoch 73/100 | Step 5650 | Recon: 0.0005 | KL: 0.97
+Epoch 73/100 done | Avg Recon: 0.0006 | Avg KL: 0.98
+Epoch 74/100 | Step 5700 | Recon: 0.0005 | KL: 0.96
+Epoch 74/100 | Step 5750 | Recon: 0.0005 | KL: 0.93
+Epoch 74/100 done | Avg Recon: 0.0006 | Avg KL: 0.98
+Epoch 75/100 | Step 5800 | Recon: 0.0007 | KL: 1.01
+Epoch 75/100 | Step 5850 | Recon: 0.0006 | KL: 1.00
+Epoch 75/100 done | Avg Recon: 0.0006 | Avg KL: 0.98
+Epoch 76/100 | Step 5900 | Recon: 0.0005 | KL: 0.95
+Epoch 76/100 done | Avg Recon: 0.0005 | Avg KL: 0.97
+Epoch 77/100 | Step 5950 | Recon: 0.0006 | KL: 1.01
+Epoch 77/100 | Step 6000 | Recon: 0.0005 | KL: 0.95
+Epoch 77/100 done | Avg Recon: 0.0005 | Avg KL: 0.97
+Epoch 78/100 | Step 6050 | Recon: 0.0006 | KL: 0.99
+Epoch 78/100 done | Avg Recon: 0.0005 | Avg KL: 0.96
+Epoch 79/100 | Step 6100 | Recon: 0.0005 | KL: 0.96
+Epoch 79/100 | Step 6150 | Recon: 0.0005 | KL: 0.94
+Epoch 79/100 done | Avg Recon: 0.0005 | Avg KL: 0.96
+Epoch 80/100 | Step 6200 | Recon: 0.0005 | KL: 0.94
+Epoch 80/100 done | Avg Recon: 0.0005 | Avg KL: 0.96
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch80.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch80.png
+Epoch 81/100 | Step 6250 | Recon: 0.0006 | KL: 0.98
+Epoch 81/100 | Step 6300 | Recon: 0.0005 | KL: 0.97
+Epoch 81/100 done | Avg Recon: 0.0005 | Avg KL: 0.96
+Epoch 82/100 | Step 6350 | Recon: 0.0005 | KL: 0.97
+Epoch 82/100 done | Avg Recon: 0.0005 | Avg KL: 0.95
+Epoch 83/100 | Step 6400 | Recon: 0.0005 | KL: 0.93
+Epoch 83/100 | Step 6450 | Recon: 0.0005 | KL: 0.96
+Epoch 83/100 done | Avg Recon: 0.0005 | Avg KL: 0.95
+Epoch 84/100 | Step 6500 | Recon: 0.0005 | KL: 0.95
+Epoch 84/100 | Step 6550 | Recon: 0.0005 | KL: 0.92
+Epoch 84/100 done | Avg Recon: 0.0005 | Avg KL: 0.95
+Epoch 85/100 | Step 6600 | Recon: 0.0004 | KL: 0.92
+Epoch 85/100 done | Avg Recon: 0.0005 | Avg KL: 0.94
+Epoch 86/100 | Step 6650 | Recon: 0.0005 | KL: 0.96
+Epoch 86/100 | Step 6700 | Recon: 0.0005 | KL: 0.92
+Epoch 86/100 done | Avg Recon: 0.0005 | Avg KL: 0.94
+Epoch 87/100 | Step 6750 | Recon: 0.0005 | KL: 0.93
+Epoch 87/100 done | Avg Recon: 0.0005 | Avg KL: 0.94
+Epoch 88/100 | Step 6800 | Recon: 0.0004 | KL: 0.92
+Epoch 88/100 | Step 6850 | Recon: 0.0004 | KL: 0.91
+Epoch 88/100 done | Avg Recon: 0.0005 | Avg KL: 0.94
+Epoch 89/100 | Step 6900 | Recon: 0.0005 | KL: 0.95
+Epoch 89/100 done | Avg Recon: 0.0005 | Avg KL: 0.93
+Epoch 90/100 | Step 6950 | Recon: 0.0005 | KL: 0.96
+Epoch 90/100 | Step 7000 | Recon: 0.0005 | KL: 0.94
+Epoch 90/100 done | Avg Recon: 0.0005 | Avg KL: 0.92
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch90.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch90.png
+Epoch 91/100 | Step 7050 | Recon: 0.0006 | KL: 0.94
+Epoch 91/100 done | Avg Recon: 0.0006 | Avg KL: 0.93
+Epoch 92/100 | Step 7100 | Recon: 0.0005 | KL: 0.93
+Epoch 92/100 | Step 7150 | Recon: 0.0004 | KL: 0.90
+Epoch 92/100 done | Avg Recon: 0.0005 | Avg KL: 0.92
+Epoch 93/100 | Step 7200 | Recon: 0.0005 | KL: 0.90
+Epoch 93/100 | Step 7250 | Recon: 0.0004 | KL: 0.93
+Epoch 93/100 done | Avg Recon: 0.0004 | Avg KL: 0.92
+Epoch 94/100 | Step 7300 | Recon: 0.0005 | KL: 0.96
+Epoch 94/100 done | Avg Recon: 0.0005 | Avg KL: 0.91
+Epoch 95/100 | Step 7350 | Recon: 0.0005 | KL: 0.87
+Epoch 95/100 | Step 7400 | Recon: 0.0005 | KL: 0.97
+Epoch 95/100 done | Avg Recon: 0.0005 | Avg KL: 0.92
+Epoch 96/100 | Step 7450 | Recon: 0.0005 | KL: 0.92
+Epoch 96/100 done | Avg Recon: 0.0005 | Avg KL: 0.92
+Epoch 97/100 | Step 7500 | Recon: 0.0004 | KL: 0.93
+Epoch 97/100 | Step 7550 | Recon: 0.0004 | KL: 0.92
+Epoch 97/100 done | Avg Recon: 0.0004 | Avg KL: 0.91
+Epoch 98/100 | Step 7600 | Recon: 0.0004 | KL: 0.90
+Epoch 98/100 done | Avg Recon: 0.0004 | Avg KL: 0.91
+Epoch 99/100 | Step 7650 | Recon: 0.0004 | KL: 0.90
+Epoch 99/100 | Step 7700 | Recon: 0.0004 | KL: 0.88
+Epoch 99/100 done | Avg Recon: 0.0004 | Avg KL: 0.90
+Epoch 100/100 | Step 7750 | Recon: 0.0004 | KL: 0.90
+Epoch 100/100 | Step 7800 | Recon: 0.0004 | KL: 0.91
+Epoch 100/100 done | Avg Recon: 0.0005 | Avg KL: 0.91
+Saved: checkpoints_vae_128_modelA_sintr/vae_oam_epoch100.pt
+Saved reconstruction grid: checkpoints_vae_128_modelA_sintr/recon_epoch100.png

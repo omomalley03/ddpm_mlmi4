@@ -1,7 +1,7 @@
 """
 Time-bounded VAE training on OAM beam data (~1 hour on GPU).
 
-Architecture: 320x320x1 → 5 downsamples → 10x10x4 latent
+Architecture: 320x320x1 -> 5 downsamples -> 10x10x4 latent
 Loss: MSE reconstruction + KL divergence
 
 Usage:
@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 from vae import VAE
 from dataset_oam import get_oam_dataloader
 
-# 320→160→80→40→20→10 (5 stages), latent = 10×10×4
+# 320->160->80->40->20->10 (5 stages), latent = 10x10x4
 CHANNEL_MULTS = (1, 2, 4, 4, 4)
 LATENT_DIM    = 4
 BASE_CHANNELS = 64
@@ -79,7 +79,7 @@ def main(args):
     deadline = t_start + args.hours * 3600
     step = epoch = 0
 
-    print(f"Training for {args.hours}h → {args.out_dir}")
+    print(f"Training for {args.hours}h -> {args.out_dir}")
 
     while time.time() < deadline:
         epoch += 1
