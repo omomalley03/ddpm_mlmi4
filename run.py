@@ -38,7 +38,7 @@ def main():
                         choices=["train", "sample", "denoise", "eval",
                                  "train_vae", "precompute", "train_latent", "sample_latent"])
     parser.add_argument("--dataset", type=str, default="cifar10")
-    parser.add_argument("--batch_size", type=int, default=128)
+    parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--lr", type=float, default=2e-4)
     parser.add_argument("--total_steps", type=int, default=1_300_000)
     parser.add_argument("--save_dir", type=str, default="checkpoints")
@@ -172,7 +172,7 @@ def main():
         from precompute_latents import precompute_latents
         precompute_latents(
             vae_checkpoint=args.vae_checkpoint,
-            dataset=args.dataset if args.dataset != "cifar10" else "celeba_hq",
+            dataset=args.dataset,
             image_size=256,
             batch_size=32,
             output_path=args.latent_path,

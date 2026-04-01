@@ -34,8 +34,11 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 module purge
 module load rhel8/default-amp
 
-PYTHON_EXEC="/rds/user/dpc49/hpc-work/MLMI4/ddpm_mlmi4/venv/bin/python"
-application="$PYTHON_EXEC -u /rds/user/dpc49/hpc-work/MLMI4/ddpm_mlmi4/run.py"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+PYTHON_EXEC="$PROJECT_ROOT/venv/bin/python"
+application="$PYTHON_EXEC -u $PROJECT_ROOT/run.py"
 
 workdir="$SLURM_SUBMIT_DIR"
 export OMP_NUM_THREADS=1

@@ -12,6 +12,7 @@ import os
 
 import torch
 from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
 from diffusers import AutoencoderKL
 
 try:
@@ -98,6 +99,16 @@ def precompute_latents(
             split="train",
             random_flip=False,
         )
+    elif dataset == "cifar10":
+        # Resize CIFAR-10 (32×32) to image_size for the VAE encoder.
+        # SD VAE produces latents at 1/8 the input resolution, so 256×256 → 32×32×4,
+        # which matches the existing latent DDPM UNet (image_size=32, in_channels=4).
+        transform = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # [0,1] → [-1,1]
+        ])
+        ds = datasets.CIFAR10(root=data_dir, train=True, download=True, transform=transform)
     else:
         raise ValueError(f"Unknown dataset: {dataset}")
 
@@ -111,7 +122,8 @@ def precompute_latents(
     all_latents = []
 
     with torch.no_grad():
-        for i, x in enumerate(dataloader):
+        for i, batch in enumerate(dataloader):
+            x = batch[0] if isinstance(batch, (list, tuple)) else batch
             x = x.to(device)
             if use_stable_diffusion_vae:
                 mu = vae.encode(x).latent_dist.mean * vae.config.scaling_factor

@@ -76,15 +76,12 @@ class CelebAHQDataset(Dataset):
                 raise RuntimeError(f"No images found in local CelebA-HQ directory: {self.local_dir}")
             print(f"Loaded CelebA-HQ from local directory: {self.local_dir} ({len(self.image_paths)} images)")
         else:
-            from datasets import load_dataset
-
-            cache_dir = os.path.join(data_dir, "hf_cache")
-            self.dataset = load_dataset(
-                "huggan/CelebA-HQ",
-                split=split,
-                cache_dir=cache_dir,
+            raise RuntimeError(
+                "No local CelebA-HQ images found. "
+                "Set the CELEBA_HQ_DIR environment variable to the directory containing your .jpg/.png images, "
+                "or place them under data/celeba_hq_256/. "
+                f"Searched: {_default_celeba_hq_candidates(data_dir)}"
             )
-            print(f"Loaded CelebA-HQ from Hugging Face cache: {cache_dir}")
 
     def __len__(self):
         if self.image_paths is not None:

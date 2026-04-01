@@ -1,25 +1,30 @@
 #!/bin/bash
 #!
-#! SLURM job script for VAE training on CelebA-HQ 256×256 (Wilkes3 A100)
+#! SLURM job script for latent DDPM training on CIFAR-10 (~20h on A100)
 #!
-#! Run after setup_env.sh. Trains the encoder/decoder for latent diffusion.
-#! After completion, run slurm_precompute.sh then slurm_latent.sh.
+#! Run after slurm_precompute_cifar_sd_vae.sh completes.
+#! Trains DDPM in the SD VAE latent space (32×32×4) on CIFAR-10.
 #!
-#! Edit the options block below, then: sbatch slurm_vae.sh
+#! Submit with: sbatch slurm_latent_cifar.sh
 
-#SBATCH -J vae_celeba
+#SBATCH -J latent_ddpm_cifar
 #SBATCH -A MLMI-dpc49-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=10:00:00
+#SBATCH --time=20:00:00
 #SBATCH --mail-type=NONE
 #SBATCH -p ampere
 
 #! ######################################################################################
 #! Set options here:
 
-options="--mode train_vae --total_epochs 50 --batch_size 16 --lr 1e-4 --kl_weight 1e-4 --log_every 100 --save_dir checkpoints_vae"
+LATENT_PATH="data/cifar10_latents.pt"
+
+options="--mode train_latent --latent_path $LATENT_PATH --total_steps 500000 --batch_size 256 --lr 2e-4 --save_dir checkpoints_latent_cifar --save_every 50000 --log_every 1000"
+
+#! To resume from a checkpoint:
+#! options="$options --resume checkpoints_latent_cifar/latent_ckpt_200000.pt"
 
 #! ######################################################################################
 
@@ -39,16 +44,16 @@ application="$PYTHON_EXEC -u $PROJECT_ROOT/run.py"
 workdir="$SLURM_SUBMIT_DIR"
 export OMP_NUM_THREADS=1
 export WANDB_PROJECT_NAME="${WANDB_PROJECT_NAME:-ddpm_mlmi4}"
-export WANDB_RUN_NAME="${WANDB_RUN_NAME:-vae_${SLURM_JOB_ID}}"
+export WANDB_RUN_NAME="${WANDB_RUN_NAME:-latent_cifar_${SLURM_JOB_ID}}"
 export WANDB_DIR="${WANDB_DIR:-$workdir/wandb}"
 
 options="$options --wandb --wandb_project $WANDB_PROJECT_NAME --wandb_run_name $WANDB_RUN_NAME"
 
 cd $workdir
 echo -e "Changed directory to `pwd`.\n"
-mkdir -p logs checkpoints_vae "$WANDB_DIR"
+mkdir -p logs checkpoints_latent_cifar "$WANDB_DIR"
 JOBID=$SLURM_JOB_ID
-CMD="$application $options > logs/vae.$JOBID"
+CMD="$application $options > logs/latent_cifar.$JOBID"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"

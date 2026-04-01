@@ -5,3 +5,4 @@ pillow
 scipy
 datasets
 wandb
+diffusers

@@ -1,0 +1,6 @@
+Pixel checkpoint:  /home/dan/ddpm_mlmi4/checkpoints/pixel_ckpt_200000.pt  (step 200000)
+Latent checkpoint: /home/dan/ddpm_mlmi4/checkpoints/latent_ckpt_200000.pt  (step 200000)
+n_images=40, n_interp=9, interp_t_frac=0.125
+
+Pixel DDPM  FID: 102.2214
+Latent DDPM FID: 112.9849

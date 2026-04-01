@@ -1,25 +1,28 @@
 #!/bin/bash
 #!
-#! SLURM job script for VAE training on CelebA-HQ 256×256 (Wilkes3 A100)
+#! SLURM job script for precomputing CIFAR-10 latents with the SD VAE (~15 min on A100)
 #!
-#! Run after setup_env.sh. Trains the encoder/decoder for latent diffusion.
-#! After completion, run slurm_precompute.sh then slurm_latent.sh.
+#! Encodes the 50k CIFAR-10 training images with the Stable Diffusion VAE
+#! (stabilityai/sd-vae-ft-ema). Each 32×32 image is resized to 256×256 before
+#! encoding, producing 32×32×4 latents compatible with the existing latent DDPM UNet.
 #!
-#! Edit the options block below, then: sbatch slurm_vae.sh
+#! Submit with: sbatch slurm_precompute_cifar_sd_vae.sh
 
-#SBATCH -J vae_celeba
+#SBATCH -J precompute_cifar_latents
 #SBATCH -A MLMI-dpc49-SL2-GPU
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=10:00:00
+#SBATCH --time=00:30:00
 #SBATCH --mail-type=NONE
 #SBATCH -p ampere
 
 #! ######################################################################################
 #! Set options here:
 
-options="--mode train_vae --total_epochs 50 --batch_size 16 --lr 1e-4 --kl_weight 1e-4 --log_every 100 --save_dir checkpoints_vae"
+LATENT_PATH="data/cifar10_latents.pt"
+
+options="--mode precompute --dataset cifar10 --latent_path $LATENT_PATH --use_stable_diffusion_vae"
 
 #! ######################################################################################
 
@@ -38,17 +41,12 @@ application="$PYTHON_EXEC -u $PROJECT_ROOT/run.py"
 
 workdir="$SLURM_SUBMIT_DIR"
 export OMP_NUM_THREADS=1
-export WANDB_PROJECT_NAME="${WANDB_PROJECT_NAME:-ddpm_mlmi4}"
-export WANDB_RUN_NAME="${WANDB_RUN_NAME:-vae_${SLURM_JOB_ID}}"
-export WANDB_DIR="${WANDB_DIR:-$workdir/wandb}"
-
-options="$options --wandb --wandb_project $WANDB_PROJECT_NAME --wandb_run_name $WANDB_RUN_NAME"
 
 cd $workdir
 echo -e "Changed directory to `pwd`.\n"
-mkdir -p logs checkpoints_vae "$WANDB_DIR"
+mkdir -p logs data
 JOBID=$SLURM_JOB_ID
-CMD="$application $options > logs/vae.$JOBID"
+CMD="$application $options > logs/precompute_cifar.$JOBID"
 
 echo -e "JobID: $JOBID\n======"
 echo "Time: `date`"
