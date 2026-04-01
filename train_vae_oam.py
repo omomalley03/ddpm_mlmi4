@@ -1,6 +1,6 @@
 """
 VAE training on OAM laser beam images.
-
+NOTE: old version before we cropped data down to 128x128. The slurm script replaces these default values
 Architecture: 320x320x1 -> (5 downsampling stages) -> 10x10x4 latent
              or 128x128x1 -> (4 downsampling stages) ->  8x8x4 latent
 Loss: MSE reconstruction + KL divergence (kl_weight=1e-4)
